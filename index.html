@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matias Moya — Portafolio</title>
+  <meta name="description" content="Matias Moya — Capacity Planning en Aerosan y estudiante de Ingeniería en Informática en DUOC UC. Datos, Machine Learning y desarrollo web.">
+  <meta name="theme-color" content="#E6E9E6">
+  <meta property="og:title" content="Matias Moya — Portafolio">
+  <meta property="og:description" content="Capacity Planning · Datos · Desarrollo web. Santiago, Chile.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/png" href="MM (1).png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Aplica el tema guardado antes de pintar (evita parpadeo) -->
+  <script src="js/theme-init.js"></script>
+  <script src="js/world-dots.js" defer></script>
+  <script src="js/globe.js" defer></script>
+  <script src="js/typewriter.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js" defer></script>
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <!-- Fondo: degradado + olas + planeta (canvas) + capa glass -->
+  <div class="backdrop" aria-hidden="true">
+    <div class="backdrop__mesh"></div>
+    <svg class="backdrop__waves" viewBox="0 0 1440 900" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="wave-a" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" class="stop-ember" stop-opacity="0"/>
+          <stop offset=".5" class="stop-y" stop-opacity=".14"/>
+          <stop offset="1" class="stop-ember" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="wave-b" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" class="stop-ember" stop-opacity=".12"/>
+          <stop offset="1" class="stop-y" stop-opacity=".02"/>
+        </linearGradient>
+      </defs>
+      <!-- Curvas periódicas (período 720/1440) para que el desplazamiento sea continuo -->
+      <g class="wave wave--1"><path fill="url(#wave-a)" d="M0 560 C240 470 480 650 720 560 S1200 650 1440 560 S1920 650 2160 560 S2640 650 2880 560 V900 H0Z"/></g>
+      <g class="wave wave--2"><path fill="url(#wave-b)" d="M0 650 C240 720 480 580 720 650 S1200 580 1440 650 S1920 580 2160 650 S2640 580 2880 650 V900 H0Z"/></g>
+      <g class="wave wave--3"><path class="wave-line wave-line--a" d="M0 500 C240 420 480 580 720 500 S1200 580 1440 500 S1920 580 2160 500 S2640 580 2880 500"/></g>
+      <g class="wave wave--4"><path class="wave-line wave-line--b" d="M0 320 C480 260 960 380 1440 320 S2400 380 2880 320"/></g>
+    </svg>
+    <canvas id="globe" class="backdrop__globe"></canvas>
+    <div class="backdrop__glass"></div>
+  </div>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+  <div class="spotlight" aria-hidden="true"></div>
+
+  <header class="nav">
+    <a href="#hero" class="nav__logo" aria-label="Inicio">&lt;MM/&gt;</a>
+    <nav aria-label="Principal">
+      <ul class="nav__links">
+        <li><a href="#sobre">Perfil</a></li>
+        <li><a href="#experiencia">Experiencia</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#proyectos">Proyectos</a></li>
+        <li><a href="#stack">Stack</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+    <div class="nav__end">
+      <a href="https://www.linkedin.com/in/matias-moya-vargas-b2525726a/" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="LinkedIn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+      </a>
+      <a href="https://github.com/twistyasap" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="GitHub">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.03-2.682-.103-.253-.447-1.27.098-2.646 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.376.202 2.393.1 2.646.64.698 1.028 1.591 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      </a>
+      <button type="button" class="icon-btn" id="theme-toggle" aria-label="Cambiar tema">
+        <svg class="icon-moon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ─── HERO ─── composición centrada; el planeta asoma abajo como horizonte -->
+    <section class="hero" id="hero">
+      <div class="hero__top">
+        <p class="pill"><span class="dot" aria-hidden="true"></span>Disponible para proyectos</p>
+        <p class="hero__meta">
+          <span>Santiago, CL</span>
+          <span class="hero__meta-sep" aria-hidden="true">/</span>
+          <span>33°27′S 70°40′O</span>
+          <span class="hero__meta-sep" aria-hidden="true">/</span>
+          <time id="local-time" class="hero__clock">--:--</time>
+        </p>
+      </div>
+
+      <div class="hero__center">
+        <p class="hero__kicker">
+          <span class="hero__kicker-line" aria-hidden="true"></span>
+          Capacity Planning @ Aerosan · Ing. Informática DUOC UC
+          <span class="hero__kicker-line" aria-hidden="true"></span>
+        </p>
+        <h1 class="hero__title" data-split>
+          <span class="hero__line">Matias</span>
+          <span class="hero__line hero__line--grad">Moya</span>
+        </h1>
+        <p class="hero__role">
+          <span class="visually-hidden">Capacity Planning, análisis de datos y desarrollo web</span>
+          <span aria-hidden="true"><span class="hero__prompt">~/matias $</span> <span id="role-rotator" data-words="Capacity Planning|Análisis de datos|Desarrollo web|Machine Learning">Capacity Planning</span><span class="tw-caret"></span></span>
+        </p>
+        <p class="hero__desc">Convierto <strong>datos en decisiones</strong> y <strong>código en herramientas útiles</strong>, desde la planificación operativa hasta la web.</p>
+        <div class="hero__ctas">
+          <a href="#experiencia" class="btn btn--primary" data-magnetic>Ver experiencia
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg>
+          </a>
+          <a href="#contacto" class="btn btn--ghost" data-magnetic>Hablemos</a>
+        </div>
+      </div>
+
+      <div class="hero__stats glass">
+        <dl class="hero__stats-list">
+          <div class="hero__stat"><dt>Semestre de Ingeniería</dt><dd><span data-count="8">8</span><small>vo</small></dd></div>
+          <div class="hero__stat"><dt>Proyectos en producción</dt><dd><span data-count="2">2</span></dd></div>
+          <div class="hero__stat"><dt>F1 en modelo ML</dt><dd>0,<span data-count="944" data-pad="3">944</span></dd></div>
+          <div class="hero__stat"><dt>Año de egreso</dt><dd><span data-count="2026">2026</span></dd></div>
+        </dl>
+        <a href="#sobre" class="hero__scroll" aria-label="Ir a la siguiente sección"><span aria-hidden="true">↓</span></a>
+      </div>
+    </section>
+
+    <!-- ─── TICKER ─── (JS duplica la lista para el loop) -->
+    <div class="ticker" aria-hidden="true">
+      <ul class="ticker__track">
+        <li>Capacity Planning</li><li>Python</li><li>Pandas</li><li>Scikit-learn</li><li>Power BI</li>
+        <li>Excel Avanzado</li><li>BigQuery</li><li>JavaScript</li><li>React</li><li>Angular</li>
+        <li>Node.js</li><li>Spring Boot</li><li>Django</li><li>Firebase</li><li>PostgreSQL</li>
+        <li>CRISP-DM</li><li>Machine Learning</li>
+      </ul>
+    </div>
+
+    <!-- ─── PERFIL ─── -->
+    <section class="panel panel--alt" id="sobre">
+      <div class="panel__inner">
+        <span class="panel__num" aria-hidden="true">01</span>
+        <div class="sobre__grid">
+          <div>
+            <p class="eyebrow reveal" data-type>Perfil</p>
+            <h2 class="section-title reveal">Más que <span class="grad">código</span></h2>
+            <div class="sobre__body reveal">
+              <p>Soy <strong>Matias Moya</strong>, estudiante de octavo semestre de Ingeniería en Informática en <strong>DUOC UC</strong> y actualmente trabajo en <strong>Capacity Planning en Aerosan</strong>, donde los datos se traducen en turnos, recursos y operación real.</p>
+              <p>Trabajo con <strong>Python, Pandas y Scikit-learn</strong> para análisis y Machine Learning, y con <strong>React, Angular, Node.js, Spring Boot, Django y Firebase</strong> para desarrollo web. También manejo <strong>Google Cloud Platform</strong> y Excel a nivel avanzado.</p>
+              <p>Me interesa el lado técnico tanto como el resultado: código que resuelve un problema real, no solo uno que funciona en el lab.</p>
+            </div>
+          </div>
+          <ul class="bento">
+            <li class="bento__item bento__item--wide glass glow-border reveal">
+              <span class="bento__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-7"/></svg></span>
+              <h3 data-type>Planificación & capacidad</h3>
+              <p>Proyección de demanda, dimensionamiento de recursos y seguimiento de indicadores operacionales.</p>
+              <svg class="bento__spark" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 32 L20 28 L40 30 L60 20 L80 24 L100 14 L120 18 L140 8 L160 12 L180 4 L200 6"/></svg>
+            </li>
+            <li class="bento__item glass glow-border reveal">
+              <span class="bento__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="10" cy="18" r="2.5"/><path d="M8 7l8 1M7.5 8l2 8M12 17l5-7"/></svg></span>
+              <h3 data-type>Datos & ML</h3>
+              <p>Clasificación, regresión y clustering con CRISP-DM, Power BI y BigQuery.</p>
+            </li>
+            <li class="bento__item glass glow-border reveal">
+              <span class="bento__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></span>
+              <h3 data-type>Desarrollo web</h3>
+              <p>React, Angular y Tailwind al frente; Django, Node.js, Spring Boot y Firebase detrás.</p>
+            </li>
+            <li class="bento__item bento__item--wide glass glow-border reveal">
+              <span class="bento__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg></span>
+              <h3 data-type>Metodología</h3>
+              <p>CRISP-DM, Scrum y principios REST, pensando siempre en el usuario final, no solo en el modelo.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PERFIL EN CÓDIGO ─── -->
+    <section class="panel" id="perfil-dev">
+      <div class="panel__inner">
+        <span class="panel__num" aria-hidden="true">02</span>
+        <p class="eyebrow reveal" data-type>Developer profile</p>
+        <h2 class="section-title reveal">Mi perfil <span class="grad">en código</span></h2>
+        <div class="editor-wrap reveal">
+          <div class="editor" id="editor">
+            <div class="editor__bar"><i></i><i></i><i></i><b>matias.js</b><em>READY</em></div>
+            <pre class="editor__code"><code data-type="code"><span class="ln"><span class="k">const</span> <span class="f">matias</span> <span class="p">=</span> <span class="p">{</span></span>
+<span class="ln">  <span class="v">role</span><span class="p">:</span> <span class="s">'Capacity Planning &amp; Developer'</span><span class="p">,</span></span>
+<span class="ln">  <span class="v">company</span><span class="p">:</span> <span class="s">'Aerosan'</span><span class="p">,</span></span>
+<span class="ln">  <span class="v">stack</span><span class="p">:</span> <span class="p">[</span><span class="s">'Python'</span><span class="p">,</span> <span class="s">'SQL'</span><span class="p">,</span> <span class="s">'JavaScript'</span><span class="p">,</span> <span class="s">'Power BI'</span><span class="p">],</span></span>
+<span class="ln">  <span class="v">status</span><span class="p">:</span> <span class="s">'Graduating 2026'</span><span class="p">,</span></span>
+<span class="ln">  <span class="k">async</span> <span class="f">deployNextStep</span><span class="p">()</span> <span class="p">{</span></span>
+<span class="ln">    <span class="k">return await</span> <span class="n">Promise</span><span class="p">.</span><span class="f">resolve</span><span class="p">({</span></span>
+<span class="ln">      <span class="v">impact</span><span class="p">:</span> <span class="s">'Real-world problem solving'</span><span class="p">,</span></span>
+<span class="ln">      <span class="v">availability</span><span class="p">:</span> <span class="s">'Open to new opportunities'</span></span>
+<span class="ln">    <span class="p">});</span></span>
+<span class="ln">  <span class="p">}</span></span>
+<span class="ln"><span class="p">};</span></span>
+<span class="ln"><span class="k">await</span> <span class="f">matias</span><span class="p">.</span><span class="f">deployNextStep</span><span class="p">();</span></span></code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── EXPERIENCIA ─── (pestañas) -->
+    <section class="panel panel--alt" id="experiencia">
+      <div class="panel__inner">
+        <span class="panel__num" aria-hidden="true">03</span>
+        <p class="eyebrow reveal" data-type>Trayectoria</p>
+        <h2 class="section-title reveal">Experiencia <span class="grad">profesional</span></h2>
+
+        <div class="xp reveal" data-tabs>
+          <div class="xp__tabs" role="tablist" aria-label="Experiencia profesional">
+            <button type="button" class="xp__tab" role="tab" id="tab-cp" aria-controls="panel-cp" aria-selected="true">
+              <span class="xp__tab-role">Capacity Planning</span>
+              <span class="xp__tab-org">Aerosan · Actual</span>
+            </button>
+            <button type="button" class="xp__tab" role="tab" id="tab-qa" aria-controls="panel-qa" aria-selected="false" tabindex="-1">
+              <span class="xp__tab-role">Data / QA Analyst</span>
+              <span class="xp__tab-org">Aerosan · Anterior</span>
+            </button>
+            <button type="button" class="xp__tab" role="tab" id="tab-fl" aria-controls="panel-fl" aria-selected="false" tabindex="-1">
+              <span class="xp__tab-role">Desarrollador freelance</span>
+              <span class="xp__tab-org">Independiente</span>
+            </button>
+            <button type="button" class="xp__tab" role="tab" id="tab-edu" aria-controls="panel-edu" aria-selected="false" tabindex="-1">
+              <span class="xp__tab-role">Ingeniería en Informática</span>
+              <span class="xp__tab-org">DUOC UC · Egreso 2026</span>
+            </button>
+          </div>
+
+          <div class="xp__panels">
+            <article class="xp__panel glass" role="tabpanel" id="panel-cp" aria-labelledby="tab-cp" tabindex="0">
+              <header class="xp__head">
+                <div>
+                  <h3 class="xp__role">Capacity Planning</h3>
+                  <p class="xp__company">Aerosan · Santiago, Chile</p>
+                </div>
+                <span class="chip chip--live"><span class="dot" aria-hidden="true"></span>Actual</span>
+              </header>
+              <ul class="xp__list">
+                <li>Proyección de demanda y dimensionamiento de personal y recursos para la operación.</li>
+                <li>Construcción de reportes e indicadores de capacidad en Excel avanzado y Power BI.</li>
+                <li>Análisis de datos operacionales para anticipar peaks y apoyar la toma de decisiones.</li>
+              </ul>
+              <div class="tags"><span class="tag tag--hi">Excel Avanzado</span><span class="tag tag--hi">Power BI</span><span class="tag tag--hi">SQL</span><span class="tag tag--hi">Python</span><span class="tag tag--hi">Forecasting</span></div>
+            </article>
+
+            <article class="xp__panel glass" role="tabpanel" id="panel-qa" aria-labelledby="tab-qa" tabindex="0" hidden>
+              <header class="xp__head">
+                <div>
+                  <h3 class="xp__role">Data / QA Analyst</h3>
+                  <p class="xp__company">Aerosan · Santiago, Chile</p>
+                </div>
+                <span class="chip">Anterior</span>
+              </header>
+              <ul class="xp__list">
+                <li>Validación de datos y aseguramiento de calidad en procesos y reportes internos.</li>
+                <li>Automatización de tareas repetitivas y limpieza de bases con Python y Excel.</li>
+              </ul>
+              <div class="tags"><span class="tag tag--hi">Python</span><span class="tag tag--hi">Pandas</span><span class="tag tag--hi">QA</span><span class="tag tag--hi">Excel</span></div>
+            </article>
+
+            <article class="xp__panel glass" role="tabpanel" id="panel-fl" aria-labelledby="tab-fl" tabindex="0" hidden>
+              <header class="xp__head">
+                <div>
+                  <h3 class="xp__role">Desarrollador freelance</h3>
+                  <p class="xp__company">Proyectos independientes</p>
+                </div>
+                <span class="chip">Freelance</span>
+              </header>
+              <ul class="xp__list">
+                <li>Diseño y desarrollo de sitios y aplicaciones web a medida, desde la interfaz hasta el despliegue.</li>
+                <li>Dashboards y análisis de datos para proyectos académicos y personales (ver proyectos abajo).</li>
+              </ul>
+              <div class="tags"><span class="tag tag--hi">React</span><span class="tag tag--hi">Django</span><span class="tag tag--hi">Firebase</span><span class="tag tag--hi">Vercel</span></div>
+            </article>
+
+            <article class="xp__panel glass" role="tabpanel" id="panel-edu" aria-labelledby="tab-edu" tabindex="0" hidden>
+              <header class="xp__head">
+                <div>
+                  <h3 class="xp__role">Ingeniería en Informática</h3>
+                  <p class="xp__company">DUOC UC · Octavo semestre</p>
+                </div>
+                <span class="chip">Egreso 2026</span>
+              </header>
+              <ul class="xp__list">
+                <li>Formación en desarrollo de software, bases de datos, minería de datos y gestión de proyectos.</li>
+                <li>Proyecto de título: Red Mamaria Preventiva, plataforma con inteligencia artificial.</li>
+              </ul>
+              <div class="tags"><span class="tag tag--hi">Ingeniería de software</span><span class="tag tag--hi">Bases de datos</span><span class="tag tag--hi">Minería de datos</span></div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SERVICIOS ─── (paneles que se expanden al pasar el mouse) -->
+    <section class="panel" id="servicios">
+      <div class="panel__inner">
+        <span class="panel__num" aria-hidden="true">04</span>
+        <p class="eyebrow reveal" data-type>Servicios</p>
+        <h2 class="section-title reveal">Qué puedo <span class="grad">hacer por ti</span></h2>
+        <ul class="services reveal">
+          <li class="service" tabindex="0">
+            <span class="service__num">01</span>
+            <span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 15v-3M12 15V8M17 15v-5"/></svg></span>
+            <h3 class="service__title">Dashboards &amp; BI</h3>
+            <div class="service__body">
+              <p>Tableros en Power BI o web que convierten tus datos en indicadores claros para decidir rápido.</p>
+              <ul class="service__list"><li>KPIs y reportes automáticos</li><li>Modelado de datos</li><li>Power Query / SQL</li></ul>
+            </div>
+          </li>
+          <li class="service" tabindex="0">
+            <span class="service__num">02</span>
+            <span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/><circle cx="18" cy="8" r="1.5"/></svg></span>
+            <h3 class="service__title">Planificación &amp; forecasting</h3>
+            <div class="service__body">
+              <p>Proyección de demanda y dimensionamiento de capacidad para que tu operación no se quede corta ni sobre.</p>
+              <ul class="service__list"><li>Modelos de demanda</li><li>Escenarios what-if</li><li>Excel avanzado</li></ul>
+            </div>
+          </li>
+          <li class="service" tabindex="0">
+            <span class="service__num">03</span>
+            <span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></span>
+            <h3 class="service__title">Desarrollo web</h3>
+            <div class="service__body">
+              <p>Sitios y aplicaciones a medida, rápidas y responsivas, desde la interfaz hasta el despliegue.</p>
+              <ul class="service__list"><li>React / Angular</li><li>APIs con Django o Node</li><li>Deploy en Vercel / Firebase</li></ul>
+            </div>
+          </li>
+          <li class="service" tabindex="0">
+            <span class="service__num">04</span>
+            <span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span>
+            <h3 class="service__title">Análisis, ML &amp; automatización</h3>
+            <div class="service__body">
+              <p>Modelos de Machine Learning y scripts en Python que encuentran patrones y te ahorran horas de trabajo manual.</p>
+              <ul class="service__list"><li>Clasificación y clustering</li><li>Limpieza de datos</li><li>Automatización con Python</li></ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ─── PROYECTOS ─── -->
+    <section class="panel panel--alt" id="proyectos">
+      <div class="panel__inner">
+        <span class="panel__num" aria-hidden="true">05</span>
+        <p class="eyebrow reveal" data-type>Proyectos</p>
+        <h2 class="section-title reveal">Lo que he <span class="grad">construido</span></h2>
+        <div class="projects">
+          <article class="project reveal" data-tilt>
+            <div class="project__sheen" aria-hidden="true"></div>
+            <div class="project__media"><img src="img/fortnite.png" alt="Captura del dashboard Fortnite Analytics" loading="lazy" width="1280" height="720"></div>
+            <div class="project__body">
+              <p class="project__meta"><span>01</span>Académico · 2025</p>
+              <h3 class="project__title" data-type>Fortnite Analytics</h3>
+              <p class="project__desc" data-type>Minería de datos con CRISP-DM para detectar bajo engagement, reconocer jugadores de alto rendimiento y segmentar perfiles. Regresión logística con F1 de 0,944 y clustering K-Means sobre 1.435 jugadores.</p>
+              <div class="tags"><span class="tag tag--hi">Python</span><span class="tag tag--hi">Pandas</span><span class="tag tag--hi">Scikit-learn</span><span class="tag tag--hi">Power BI</span><span class="tag tag--hi">Chart.js</span></div>
+              <div class="project__actions">
+                <a class="btn btn--solid" href="https://twistyasap.github.io/fortnite_analytics/" target="_blank" rel="noopener noreferrer">Ver en vivo <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
+                <a class="btn btn--ghost" href="https://github.com/twistyasap/fortnite_analytics" target="_blank" rel="noopener noreferrer">Código <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project reveal" data-tilt>
+            <div class="project__sheen" aria-hidden="true"></div>
+            <div class="project__media"><img src="img/mamaria.png" alt="Captura de la plataforma Red Mamaria Preventiva" loading="lazy" width="1280" height="720"></div>
+            <div class="project__body">
+              <p class="project__meta"><span>02</span>Proyecto de título</p>
+              <h3 class="project__title" data-type>Red Mamaria Preventiva</h3>
+              <p class="project__desc" data-type>Plataforma de prevención de cáncer de mama apoyada por inteligencia artificial: educa, analiza señales y responde preguntas para fomentar la detección temprana.</p>
+              <div class="tags"><span class="tag tag--hi">Django</span><span class="tag tag--hi">Python</span><span class="tag tag--hi">JavaScript</span><span class="tag tag--hi">IA</span><span class="tag tag--hi">Vercel</span></div>
+              <div class="project__actions">
+                <a class="btn btn--solid" href="https://red-mamaria-preventiva.vercel.app/" target="_blank" rel="noopener noreferrer">Ver en vivo <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
+                <a class="btn btn--ghost" href="https://github.com/twistyasap" target="_blank" rel="noopener noreferrer">Código <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PROCESO ─── (la línea se dibuja según el scroll) -->
+    <section class="panel" id="proceso">
+      <div class="panel__inner">
+        <span class="panel__num" aria-hidden="true">06</span>
+        <p class="eyebrow reveal" data-type>Proceso</p>
+        <h2 class="section-title reveal">Cómo <span class="grad">trabajo</span></h2>
+        <ol class="process" id="process">
+          <li class="process__step reveal">
+            <span class="process__node" aria-hidden="true">01</span>
+            <h3>Entender</h3>
+            <p>Escucho el problema real, el contexto y qué decisión hay que tomar con el resultado.</p>
+            <code class="process__cmd">git checkout -b idea</code>
+          </li>
+          <li class="process__step reveal">
+            <span class="process__node" aria-hidden="true">02</span>
+            <h3>Datos</h3>
+            <p>Reúno, limpio y exploro la información para saber con qué cuento y qué falta.</p>
+            <code class="process__cmd">df.describe()</code>
+          </li>
+          <li class="process__step reveal">
+            <span class="process__node" aria-hidden="true">03</span>
+            <h3>Construir</h3>
+            <p>Desarrollo el modelo, el dashboard o la app en iteraciones cortas y visibles.</p>
+            <code class="process__cmd">npm run build</code>
+          </li>
+          <li class="process__step reveal">
+            <span class="process__node" aria-hidden="true">04</span>
+            <h3>Medir</h3>
+            <p>Valido con métricas, ajusto y documento para que la solución se pueda mantener.</p>
+            <code class="process__cmd">git push origin main</code>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ─── STACK ─── (tarjetas tipo archivo de editor) -->
+    <section class="panel panel--alt" id="stack">
+      <div class="panel__inner">
+        <span class="panel__num" aria-hidden="true">07</span>
+        <p class="eyebrow reveal" data-type>Tecnologías</p>
+        <h2 class="section-title reveal">Con qué <span class="grad">trabajo</span></h2>
+        <div class="stack-grid">
+          <article class="stack-card glass glow-border reveal">
+            <header class="stack-card__bar"><i></i><i></i><i></i><span>frontend.js</span></header>
+            <p class="stack-card__cat" data-type>frontend</p>
+            <div class="tags" data-type-tags><span class="tag tag--hi">HTML</span><span class="tag tag--hi">CSS</span><span class="tag tag--hi">JavaScript</span><span class="tag tag--hi">React</span><span class="tag tag--hi">Angular</span><span class="tag tag--hi">TailwindCSS</span><span class="tag tag--hi">Vite</span></div>
+          </article>
+          <article class="stack-card glass glow-border reveal">
+            <header class="stack-card__bar"><i></i><i></i><i></i><span>backend.js</span></header>
+            <p class="stack-card__cat" data-type>backend</p>
+            <div class="tags" data-type-tags><span class="tag tag--hi">Java</span><span class="tag tag--hi">Spring Boot</span><span class="tag tag--hi">Node.js</span><span class="tag tag--hi">NestJS</span><span class="tag tag--hi">Django</span><span class="tag tag--hi">Firebase</span><span class="tag tag--hi">PostgreSQL</span><span class="tag tag--hi">SQL / Oracle</span></div>
+          </article>
+          <article class="stack-card glass glow-border reveal">
+            <header class="stack-card__bar"><i></i><i></i><i></i><span>data.py</span></header>
+            <p class="stack-card__cat" data-type>dataML</p>
+            <div class="tags" data-type-tags><span class="tag tag--hi">Python</span><span class="tag tag--hi">Pandas</span><span class="tag tag--hi">NumPy</span><span class="tag tag--hi">Scikit-learn</span><span class="tag tag--hi">K-Means</span><span class="tag tag--hi">Regresión</span></div>
+          </article>
+          <article class="stack-card glass glow-border reveal">
+            <header class="stack-card__bar"><i></i><i></i><i></i><span>planning.xlsx</span></header>
+            <p class="stack-card__cat" data-type>planificacion</p>
+            <div class="tags" data-type-tags><span class="tag tag--hi">Capacity Planning</span><span class="tag tag--hi">Forecasting</span><span class="tag tag--hi">KPIs</span><span class="tag tag--hi">Power BI</span><span class="tag tag--hi">Excel Avanzado</span><span class="tag tag--hi">Power Query</span></div>
+          </article>
+          <article class="stack-card glass glow-border reveal">
+            <header class="stack-card__bar"><i></i><i></i><i></i><span>cloud.yml</span></header>
+            <p class="stack-card__cat" data-type>cloud</p>
+            <div class="tags" data-type-tags><span class="tag tag--hi">Google Cloud Platform</span><span class="tag tag--hi">BigQuery</span><span class="tag tag--hi">Cloud Storage</span><span class="tag tag--hi">Vercel</span></div>
+          </article>
+          <article class="stack-card glass glow-border reveal">
+            <header class="stack-card__bar"><i></i><i></i><i></i><span>tools.md</span></header>
+            <p class="stack-card__cat" data-type>herramientas</p>
+            <div class="tags" data-type-tags><span class="tag">Git / GitHub</span><span class="tag">Docker</span><span class="tag">VS Code</span><span class="tag">CRISP-DM</span><span class="tag">Scrum</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── LLAMADO A LA ACCIÓN ─── -->
+    <section class="cta" id="hablemos" aria-labelledby="cta-title">
+      <div class="cta__inner glass reveal">
+        <div class="cta__marquee" aria-hidden="true">
+          <span>datos · código · decisiones · datos · código · decisiones · </span><span>datos · código · decisiones · datos · código · decisiones · </span>
+        </div>
+        <h2 class="cta__title" id="cta-title">¿Tienes un proyecto <span class="grad">en mente?</span></h2>
+        <p class="cta__sub">Cuéntame la idea y te respondo con una propuesta. Sin compromiso.</p>
+        <a href="#contacto" class="btn btn--primary" data-magnetic>Hablemos
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- ─── CONTACTO ─── -->
+    <section class="panel" id="contacto">
+      <div class="panel__inner reveal">
+        <span class="panel__num" aria-hidden="true">08</span>
+        <div class="contact">
+          <div>
+            <p class="eyebrow" data-type>Contacto</p>
+            <h2 class="section-title">Habla <span class="grad">conmigo</span></h2>
+            <p class="contact__sub">Abierto a colaboraciones, proyectos freelance y nuevas oportunidades. Si algo de lo que ves encaja, escríbeme directo.</p>
+            <ul class="contact__tiles">
+              <li>
+                <a href="https://wa.me/56951524830?text=Hola%20Matias,%20te%20contacto%20desde%20tu%20portafolio" target="_blank" rel="noopener noreferrer" class="tile glass glow-border">
+                  <span class="tile__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.554 4.107 1.523 5.832L.079 23.07a.5.5 0 0 0 .611.636l5.385-1.406A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22A10 10 0 0 1 6.354 20.39l-.387-.231-4.007 1.046 1.07-3.91-.251-.4A10 10 0 1 1 12 22z"/></svg></span>
+                  <span class="tile__lbl">WhatsApp</span>
+                  <span class="tile__val">Contáctame</span>
+                  <span class="tile__arrow" aria-hidden="true">↗</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://www.linkedin.com/in/matias-moya-vargas-b2525726a/" target="_blank" rel="noopener noreferrer" class="tile glass glow-border">
+                  <span class="tile__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></span>
+                  <span class="tile__lbl">LinkedIn</span>
+                  <span class="tile__val">Matias Moya</span>
+                  <span class="tile__arrow" aria-hidden="true">↗</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/twistyasap" target="_blank" rel="noopener noreferrer" class="tile glass glow-border">
+                  <span class="tile__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.03-2.682-.103-.253-.447-1.27.098-2.646 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.376.202 2.393.1 2.646.64.698 1.028 1.591 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg></span>
+                  <span class="tile__lbl">GitHub</span>
+                  <span class="tile__val">twistyasap</span>
+                  <span class="tile__arrow" aria-hidden="true">↗</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <form class="form glass" id="contact-form" novalidate>
+            <div class="form__row">
+              <div class="field">
+                <label class="field__lbl" for="f-name">Nombre</label>
+                <input class="field__input" type="text" id="f-name" name="nombre" placeholder="Tu nombre" autocomplete="name" required>
+              </div>
+              <div class="field">
+                <label class="field__lbl" for="f-phone">WhatsApp</label>
+                <input class="field__input" type="tel" id="f-phone" name="whatsapp" placeholder="+56 9 XXXX XXXX" autocomplete="tel">
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__lbl" for="f-subject">Asunto</label>
+              <input class="field__input" type="text" id="f-subject" name="asunto" placeholder="Proyecto / Colaboración / Consulta">
+            </div>
+            <div class="field">
+              <label class="field__lbl" for="f-msg">Mensaje</label>
+              <textarea class="field__input field__input--area" id="f-msg" name="mensaje" placeholder="Cuéntame de qué se trata..." required></textarea>
+            </div>
+            <p class="form__feedback" id="form-feedback" role="status" aria-live="polite" hidden></p>
+            <button type="submit" class="btn btn--primary btn--block" id="form-submit">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>
+              <span>Enviar mensaje</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <strong>Matias Moya</strong>
+    <span>© <span id="year"></span> · Santiago, Chile · DUOC UC</span>
+  </footer>
+
+  <button type="button" class="to-top" id="to-top" aria-label="Volver arriba">↑</button>
+</body>
+</html>
