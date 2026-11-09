@@ -147,17 +147,24 @@ main, .footer { position: relative; z-index: 2; }
     radial-gradient(35% 30% at 85% 15%, rgba(var(--y-rgb), .10), transparent 70%),
     radial-gradient(45% 40% at 70% 85%, rgba(var(--amber-rgb), .12), transparent 70%),
     radial-gradient(30% 30% at 30% 75%, rgba(var(--pale-rgb), .05), transparent 70%);
-  filter: blur(10px);
+  /* Sin filter: blur (los degradados ya son suaves y el blur sobre una capa
+     de 140% de pantalla animada era muy caro). Capa propia en la GPU. */
+  will-change: transform;
   animation: mesh-drift 26s ease-in-out infinite alternate;
 }
 
-.backdrop__waves { position: absolute; inset: 0; width: 100%; height: 100%; }
+.backdrop__defs { position: absolute; width: 0; height: 0; overflow: hidden; }
 .stop-y { stop-color: var(--y); }
 .stop-ember { stop-color: var(--ember); }
 .wave-line { fill: none; }
 .wave-line--a { stroke: var(--y); stroke-opacity: .2; stroke-width: 1.2; }
 .wave-line--b { stroke: var(--ember); stroke-opacity: .25; stroke-width: 1; }
-.wave { will-change: transform; }
+/* Cada ola mide 2× el ancho y se desplaza media longitud: loop continuo */
+.wave {
+  position: absolute; top: 0; left: 0;
+  width: 200%; height: 100%; max-width: none;
+  will-change: transform; backface-visibility: hidden;
+}
 .wave--1 { animation: wave-flow 22s linear infinite; }
 .wave--2 { animation: wave-flow 34s linear infinite reverse; }
 .wave--3 { animation: wave-flow 18s linear infinite; }
@@ -180,9 +187,13 @@ main, .footer { position: relative; z-index: 2; }
   box-shadow: 0 0 12px var(--y);
 }
 
+/* Spotlight: círculo fijo que JS mueve con transform (sin repintar) */
 .spotlight {
-  position: fixed; inset: 0; z-index: 1; pointer-events: none;
-  background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 40%), rgba(var(--y-rgb), .07), transparent 60%);
+  position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none;
+  width: 1040px; height: 1040px; margin: -520px 0 0 -520px;
+  background: radial-gradient(520px circle at center, rgba(var(--y-rgb), .07), transparent 60%);
+  transform: translate3d(50vw, 40vh, 0);
+  will-change: transform;
 }
 
 /* 4. LAYOUT ---------------------------------------------------------------- */
@@ -215,7 +226,9 @@ main, .footer { position: relative; z-index: 2; }
   text-shadow: var(--neon-text);
 }
 .eyebrow::before {
-  content: ""; width: 28px; height: 1px; background: var(--y); box-shadow: 0 0 8px var(--y), 0 0 16px var(--ember);
+  content: ""; flex: none; width: 44px; height: 1px; background: var(--y); box-shadow: 0 0 8px var(--y), 0 0 16px var(--ember);
+  transform-origin: left;
+  /* Se anima con scaleX (compositor) en vez de width (layout en cada frame) */
   animation: line-grow 2.4s ease-in-out infinite alternate;
 }
 
@@ -326,7 +339,8 @@ main, .footer { position: relative; z-index: 2; }
   content: ""; position: absolute; top: 0; left: -80%;
   width: 50%; height: 100%;
   background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .55), transparent);
-  transform: skewX(-20deg); animation: sweep 3.2s ease-in-out infinite;
+  transform: skewX(-20deg); will-change: transform;
+  animation: sweep 3.2s ease-in-out infinite;
 }
 .btn--ghost { background: var(--glass-strong); color: var(--ink); border-color: var(--glass-b); backdrop-filter: blur(10px); }
 .btn--ghost:hover { border-color: var(--y); color: var(--y); background: rgba(var(--y-rgb), .1); }
@@ -366,9 +380,10 @@ main, .footer { position: relative; z-index: 2; }
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude;
   opacity: 0; transition: opacity .4s;
-  animation: spin 4s linear infinite;
+  /* Invisible hasta el hover: no tiene sentido repintarlo cada frame antes */
+  animation: spin 4s linear infinite paused;
 }
-.glow-border:hover::before { opacity: 1; }
+.glow-border:hover::before { opacity: 1; animation-play-state: running; }
 
 /* Tags & chips */
 .tags { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -499,11 +514,17 @@ main, .footer { position: relative; z-index: 2; }
 .ticker {
   position: relative; z-index: 2; overflow: hidden;
   padding: 13px 0; white-space: nowrap;
-  background: linear-gradient(90deg, var(--ember), var(--amber), var(--y), var(--amber), var(--ember));
   box-shadow: 0 0 30px rgba(var(--amber-rgb), .35), 0 0 60px rgba(var(--ember-rgb), .2);
-  background-size: 200% 100%; animation: shine 8s linear infinite;
 }
-.ticker__track { display: inline-flex; animation: ticker 40s linear infinite; }
+/* El degradado brillante es una capa ancha que se desplaza con transform
+   (antes se animaba background-position y se repintaba la barra entera) */
+.ticker::before {
+  content: ""; position: absolute; top: 0; bottom: 0; left: -400%; width: 600%;
+  background: linear-gradient(90deg, var(--ember), var(--amber), var(--y), var(--amber), var(--ember)) 0 0 / 33.3334% 100% repeat-x;
+  will-change: transform;
+  animation: ticker-shine 8s linear infinite;
+}
+.ticker__track { position: relative; display: inline-flex; will-change: transform; animation: ticker 40s linear infinite; }
 .ticker:hover .ticker__track { animation-play-state: paused; }
 .ticker__track li {
   display: inline-flex; align-items: center;
@@ -547,11 +568,17 @@ main, .footer { position: relative; z-index: 2; }
 
 /* Editor (perfil en código) */
 .editor-wrap { position: relative; max-width: 780px; margin: 0 auto; }
-.editor-wrap::before {
-  content: ""; position: absolute; inset: -2px; z-index: 0;
-  border-radius: 20px;
-  background: conic-gradient(from var(--angle), transparent 0 70%, var(--y), var(--ember), transparent);
-  animation: spin 5s linear infinite; filter: blur(1px);
+/* Borde giratorio: la capa cónica rota con transform (GPU) dentro de un
+   contenedor recortado, en vez de animar --angle y repintar con blur */
+.editor-glow {
+  position: absolute; inset: -2px; z-index: 0;
+  border-radius: 20px; overflow: hidden;
+}
+.editor-glow::before {
+  content: ""; position: absolute; inset: -75%;
+  background: conic-gradient(transparent 0 70%, var(--y), var(--ember), transparent);
+  will-change: transform;
+  animation: rotate 5s linear infinite;
 }
 .editor {
   position: relative; z-index: 1; overflow: hidden;
@@ -613,15 +640,23 @@ main, .footer { position: relative; z-index: 2; }
 /* Proyectos */
 .projects { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; perspective: 1400px; }
 .project {
-  position: relative; overflow: hidden;
+  position: relative; overflow: hidden; isolation: isolate;
   display: flex; flex-direction: column;
   border-radius: 24px; border: 1px solid transparent;
-  background:
-    linear-gradient(var(--bg3), var(--bg3)) padding-box,
-    conic-gradient(from var(--angle), rgba(var(--y-rgb), .12), var(--y), var(--ember), rgba(var(--y-rgb), .12) 55%) border-box;
-  animation: spin 7s linear infinite;
-  transform-style: preserve-3d;
   transition: transform .2s, box-shadow .4s;
+}
+/* Borde giratorio: capa cónica que rota con transform (GPU) detrás de una
+   capa sólida; solo asoma el borde de 1px. Antes se repintaba la tarjeta
+   completa (con su imagen) en cada frame. */
+.project::before {
+  content: ""; position: absolute; inset: -75%; z-index: -2;
+  background: conic-gradient(rgba(var(--y-rgb), .12), var(--y), var(--ember), rgba(var(--y-rgb), .12) 55%);
+  will-change: transform;
+  animation: rotate 7s linear infinite;
+}
+.project::after {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  border-radius: 23px; background: var(--bg3);
 }
 .project:hover { box-shadow: 0 30px 70px rgba(var(--y-rgb), .2); }
 .project__sheen {
@@ -783,6 +818,7 @@ main, .footer { position: relative; z-index: 2; }
   display: flex; width: max-content; white-space: nowrap; pointer-events: none;
   font-family: var(--font-display); font-size: clamp(60px, 10vw, 140px); line-height: 1;
   color: transparent; -webkit-text-stroke: 1px rgba(var(--y-rgb), .06);
+  will-change: transform;
   animation: ticker 40s linear infinite;
 }
 .cta__marquee span { flex: none; }
@@ -881,12 +917,18 @@ main, .footer { position: relative; z-index: 2; }
 .js [data-type-tags] .tag { opacity: 0; transform: translateY(8px) scale(.9); }
 .js [data-type-tags] .tag.is-typed { animation: tag-in .35s var(--ease) forwards; }
 
+/* Animaciones fuera de pantalla: en pausa (JS marca .is-paused) */
+.is-paused, .is-paused *, .is-paused *::before, .is-paused *::after,
+.is-paused::before, .is-paused::after { animation-play-state: paused !important; }
+
 @keyframes mesh-drift { to { transform: translate3d(4%, -3%, 0) rotate(6deg) scale(1.08); } }
-@keyframes wave-flow { to { transform: translateX(-1440px); } }
-@keyframes line-grow { from { width: 12px; } to { width: 44px; } }
+@keyframes wave-flow { to { transform: translate3d(-50%, 0, 0); } }
+@keyframes line-grow { from { transform: scaleX(.2727); } to { transform: scaleX(1); } }
 @keyframes shine { to { background-position: -250% 0; } }
+@keyframes ticker-shine { to { transform: translate3d(41.6667%, 0, 0); } }
+@keyframes rotate { to { transform: rotate(360deg); } }
 @keyframes pulse { 70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
-@keyframes sweep { 60%, 100% { left: 140%; } }
+@keyframes sweep { 60%, 100% { transform: translateX(440%) skewX(-20deg); } }
 @keyframes ripple { to { transform: scale(4); opacity: 0; } }
 @keyframes ticker { to { transform: translateX(-50%); } }
 @keyframes spin { to { --angle: 360deg; } }
@@ -926,7 +968,7 @@ main, .footer { position: relative; z-index: 2; }
 [data-theme="light"] .wave-line--a { stroke: #141414; stroke-opacity: .08; }
 [data-theme="light"] .wave-line--b { stroke: #141414; stroke-opacity: .06; }
 [data-theme="light"] .backdrop__glass { background: none; }
-[data-theme="light"] .spotlight { background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 40%), rgba(255, 255, 255, .45), transparent 60%); }
+[data-theme="light"] .spotlight { background: radial-gradient(520px circle at center, rgba(255, 255, 255, .45), transparent 60%); }
 [data-theme="light"] .progress { background: var(--lime); box-shadow: none; }
 
 /* Nav y logo */
@@ -954,7 +996,8 @@ main, .footer { position: relative; z-index: 2; }
 [data-theme="light"] .glass,
 [data-theme="light"] .service,
 [data-theme="light"] .project { box-shadow: var(--shadow); }
-[data-theme="light"] .project { background: linear-gradient(var(--bg3), var(--bg3)) padding-box, linear-gradient(var(--bg3), var(--bg3)) border-box; animation: none; }
+[data-theme="light"] .project { background: var(--bg3); }
+[data-theme="light"] .project::before, [data-theme="light"] .project::after { display: none; }
 [data-theme="light"] .glass::after { background: radial-gradient(260px circle at var(--gx, 50%) var(--gy, 0%), rgba(223, 242, 110, .35), transparent 60%); }
 [data-theme="light"] .glow-border::before { background: conic-gradient(from var(--angle), transparent 0 60%, #141414, var(--lime), transparent 90%); }
 

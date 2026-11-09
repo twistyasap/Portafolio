@@ -143,7 +143,11 @@
       });
 
       moveIndicator(selected());
-      window.addEventListener('resize', function () { moveIndicator(selected()); });
+      var rz = 0;
+      window.addEventListener('resize', function () {
+        if (rz) return;
+        rz = requestAnimationFrame(function () { rz = 0; moveIndicator(selected()); });
+      });
       // Las fuentes cambian el tamaño de las pestañas al cargar
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { moveIndicator(selected()); });
     });
@@ -264,15 +268,18 @@
 
     function update() {
       ticking = false;
-      var max = root.scrollHeight - window.innerHeight;
+      // Primero todas las lecturas de layout, después las escrituras
+      // (intercalarlas fuerza un recálculo de layout síncrono)
+      var vh = window.innerHeight;
+      var max = root.scrollHeight - vh;
       var y = window.scrollY;
-      if (progress) progress.style.transform = 'scaleX(' + (max > 0 ? y / max : 0) + ')';
-      if (toTop) toTop.classList.toggle('is-visible', y > 500);
-
       var current = '';
       sections.forEach(function (s) {
-        if (s.getBoundingClientRect().top < window.innerHeight * 0.5) current = s.id;
+        if (s.getBoundingClientRect().top < vh * 0.5) current = s.id;
       });
+
+      if (progress) progress.style.transform = 'scaleX(' + (max > 0 ? y / max : 0) + ')';
+      if (toTop) toTop.classList.toggle('is-visible', y > 500);
       links.forEach(function (a) {
         var active = a.getAttribute('href') === '#' + current;
         a.classList.toggle('is-active', active);
@@ -294,53 +301,96 @@
   function initPointerFx() {
     if (!finePointer || reducedMotion) return;
 
-    // Spotlight que sigue al cursor
-    window.addEventListener('mousemove', function (e) {
-      root.style.setProperty('--mx', e.clientX + 'px');
-      root.style.setProperty('--my', e.clientY + 'px');
-    }, { passive: true });
+    // Ejecuta fn como máximo una vez por frame con el último evento recibido
+    function perFrame(fn) {
+      var pending = null, id = 0;
+      return function (e) {
+        pending = e;
+        if (id) return;
+        id = requestAnimationFrame(function () { id = 0; fn(pending); });
+      };
+    }
+    // Guarda el rect al entrar (y lo invalida al hacer scroll/resize) para no
+    // forzar un layout con getBoundingClientRect en cada mousemove
+    var rectCache = new WeakMap();
+    function rectOf(el) {
+      var r = rectCache.get(el);
+      if (!r) { r = el.getBoundingClientRect(); rectCache.set(el, r); }
+      return r;
+    }
+    function clearRects() { rectCache = new WeakMap(); }
+    window.addEventListener('scroll', clearRects, { passive: true });
+    window.addEventListener('resize', clearRects);
+
+    // Spotlight que sigue al cursor: se mueve con transform (compositor),
+    // sin tocar variables CSS en :root (eso recalculaba estilos de toda la página)
+    var spot = $('.spotlight');
+    if (spot) {
+      window.addEventListener('mousemove', perFrame(function (e) {
+        spot.style.transform = 'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0)';
+      }), { passive: true });
+    }
 
     // Brillo dentro de tarjetas glass
     $$('.glass').forEach(function (g) {
-      g.addEventListener('mousemove', function (e) {
-        var r = g.getBoundingClientRect();
+      g.addEventListener('mousemove', perFrame(function (e) {
+        var r = rectOf(g);
         g.style.setProperty('--gx', (e.clientX - r.left) + 'px');
         g.style.setProperty('--gy', (e.clientY - r.top) + 'px');
-      });
+      }), { passive: true });
     });
 
     // Inclinación 3D de proyectos
     $$('[data-tilt]').forEach(function (card) {
-      card.addEventListener('mousemove', function (e) {
-        var r = card.getBoundingClientRect();
+      var leaving = false;
+      card.addEventListener('mouseenter', function () { leaving = false; rectCache.delete(card); });
+      card.addEventListener('mousemove', perFrame(function (e) {
+        if (leaving) return;
+        var r = rectOf(card);
         var x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
         card.style.transform = 'rotateY(' + (x - 0.5) * 10 + 'deg) rotateX(' + (0.5 - y) * 8 + 'deg) translateY(-6px)';
         card.style.setProperty('--gx', x * 100 + '%');
         card.style.setProperty('--gy', y * 100 + '%');
-      });
-      card.addEventListener('mouseleave', function () { card.style.transform = ''; });
+      }), { passive: true });
+      card.addEventListener('mouseleave', function () { leaving = true; card.style.transform = ''; });
     });
 
     // Inclinación del editor
     var editor = $('#editor');
     if (editor) {
       var wrap = editor.parentElement;
-      wrap.addEventListener('mousemove', function (e) {
-        var r = editor.getBoundingClientRect();
+      var edLeaving = false;
+      wrap.addEventListener('mouseenter', function () { edLeaving = false; rectCache.delete(editor); });
+      wrap.addEventListener('mousemove', perFrame(function (e) {
+        if (edLeaving) return;
+        var r = rectOf(editor);
         var x = (e.clientX - r.left) / r.width - 0.5, y = 0.5 - (e.clientY - r.top) / r.height;
         editor.style.transform = 'perspective(900px) rotateY(' + x * 6 + 'deg) rotateX(' + y * 4 + 'deg)';
-      });
-      wrap.addEventListener('mouseleave', function () { editor.style.transform = ''; });
+      }), { passive: true });
+      wrap.addEventListener('mouseleave', function () { edLeaving = true; editor.style.transform = ''; });
     }
 
-    // Botones magnéticos
+    // Botones magnéticos (el rect se toma al entrar: el botón se mueve con
+    // transform y medirlo en cada evento lo haría "perseguirse" a sí mismo)
     $$('[data-magnetic]').forEach(function (b) {
-      b.addEventListener('mousemove', function (e) {
-        var r = b.getBoundingClientRect();
+      var r = null;
+      b.addEventListener('mouseenter', function () { b.style.transform = ''; r = b.getBoundingClientRect(); });
+      b.addEventListener('mousemove', perFrame(function (e) {
+        if (!r) return;
         b.style.transform = 'translate(' + (e.clientX - r.left - r.width / 2) * 0.25 + 'px,' + (e.clientY - r.top - r.height / 2) * 0.35 + 'px)';
-      });
-      b.addEventListener('mouseleave', function () { b.style.transform = ''; });
+      }), { passive: true });
+      b.addEventListener('mouseleave', function () { r = null; b.style.transform = ''; });
     });
+  }
+
+  /* ── Pausa las animaciones CSS de las secciones que no están en pantalla ─ */
+  function initOffscreenPause() {
+    if (!('IntersectionObserver' in window)) return;
+    var blocks = $$('main > section, main > .ticker');
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { e.target.classList.toggle('is-paused', !e.isIntersecting); });
+    }, { rootMargin: '150px 0px' });
+    blocks.forEach(function (b) { io.observe(b); });
   }
 
   /* ── Ripple en botones ────────────────────────────────────────────────── */
@@ -434,6 +484,7 @@
     initProcess();
     initScroll();
     initPointerFx();
+    initOffscreenPause();
     initRipple();
     initForm();
   }

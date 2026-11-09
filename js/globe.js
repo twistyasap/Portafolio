@@ -54,6 +54,10 @@
       py[i] = Math.sin(la);
       pz[i] = Math.cos(la) * Math.cos(lo);
     }
+    // Buffers reutilizables para agrupar los puntos frontales por opacidad
+    var BUCKETS = 10;
+    var bucketLen = new Int32Array(BUCKETS);
+    var bucketPts = new Float32Array(BUCKETS * count * 3);
 
     var W = 0, H = 0, dpr = 1;
     var stars = [], shooting = null, nextShoot = 120;
@@ -85,7 +89,7 @@
     function resize() {
       W = window.innerWidth;
       H = window.innerHeight;
-      dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = Math.round(W * dpr);
       canvas.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -113,12 +117,16 @@
     }
 
     var tmp = [0, 0, 0];
+    // Senos/cosenos de la rotación: se calculan una vez por frame (updateRot)
+    var cr = 1, sr = 0, ct = 1, st = 0;
+    function updateRot() {
+      cr = Math.cos(rotY); sr = Math.sin(rotY);
+      ct = Math.cos(tilt); st = Math.sin(tilt);
+    }
     // Rota (x,y,z) por rotY (eje vertical) y tilt (eje X) y proyecta
     function project(x, y, z, out) {
-      var cr = Math.cos(rotY), sr = Math.sin(rotY);
       var x1 = x * cr + z * sr;
       var z1 = -x * sr + z * cr;
-      var ct = Math.cos(tilt), st = Math.sin(tilt);
       var y2 = y * ct - z1 * st;
       var z2 = y * st + z1 * ct;
       out[0] = cur.cx + x1 * cur.R;
@@ -128,16 +136,19 @@
     }
 
     function drawStars() {
-      var c = palette.star;
+      // Un solo fillStyle; la opacidad de cada estrella va por globalAlpha
+      // (evita crear y parsear un string rgba() por estrella en cada frame)
+      ctx.fillStyle = rgba(palette.star, 1);
       var off = window.scrollY;
+      var k2 = palette.light ? 0.35 : 1;
       for (var k = 0; k < stars.length; k++) {
         var s = stars[k];
         var y = (s.y - off * s.depth * 0.15) % H;
         if (y < 0) y += H;
-        var a = (0.25 + 0.55 * (0.5 + 0.5 * Math.sin(s.phase + t * s.speed))) * (palette.light ? 0.35 : 1);
-        ctx.fillStyle = rgba(c, a);
+        ctx.globalAlpha = (0.25 + 0.55 * (0.5 + 0.5 * Math.sin(s.phase + t * s.speed))) * k2;
         ctx.fillRect(s.x, y, s.r, s.r);
       }
+      ctx.globalAlpha = 1;
     }
 
     function drawShootingStar() {
@@ -205,11 +216,14 @@
       var sx = Math.cos(angle) * R * rx, sy = Math.sin(angle) * R * ry;
       var behind = Math.sin(angle) < 0 && Math.abs(sx) < R;
       if (!behind) {
+        // Brillo con un degradado radial (shadowBlur es muy caro por frame)
+        var glow = ctx.createRadialGradient(sx, sy, 0, sx, sy, 12);
+        glow.addColorStop(0, rgba(color, 0.55));
+        glow.addColorStop(1, rgba(color, 0));
+        ctx.fillStyle = glow;
+        ctx.beginPath(); ctx.arc(sx, sy, 12, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = rgba(sat, 1);
-        ctx.shadowColor = rgba(color, 1);
-        ctx.shadowBlur = 14;
         ctx.beginPath(); ctx.arc(sx, sy, 3, 0, Math.PI * 2); ctx.fill();
-        ctx.shadowBlur = 0;
       }
       ctx.restore();
     }
@@ -235,28 +249,50 @@
 
       drawGraticule(c);
 
-      // Puntos de tierra (cara trasera tenue, frontal brillante)
+      // Puntos de tierra (cara trasera tenue, frontal brillante).
+      // Se agrupan por opacidad en BUCKETS trazados: un fill() por grupo en
+      // vez de un fillStyle + fillRect por punto (miles por frame).
       var dot = Math.max(1.2, R / 115);
-      for (var k = 0; k < count; k++) {
+      var minX = -dot * 2, maxX = W + dot * 2, minY = -dot * 2, maxY = H + dot * 2;
+      ctx.beginPath();
+      var b, k;
+      for (b = 0; b < BUCKETS; b++) { bucketLen[b] = 0; }
+      for (k = 0; k < count; k++) {
         project(px[k], py[k], pz[k], tmp);
-        var z = tmp[2];
+        var x0 = tmp[0], y0 = tmp[1], z = tmp[2];
+        if (x0 < minX || x0 > maxX || y0 < minY || y0 > maxY) continue; // fuera de pantalla
         if (z < 0) {
-          ctx.fillStyle = rgba(c, 0.06);
-          ctx.fillRect(tmp[0] - dot * 0.4, tmp[1] - dot * 0.4, dot * 0.8, dot * 0.8);
+          ctx.rect(x0 - dot * 0.4, y0 - dot * 0.4, dot * 0.8, dot * 0.8);
         } else {
-          var s = dot * (0.65 + z * 0.55);
-          ctx.fillStyle = rgba(z > 0.55 ? pale : c, 0.35 + z * 0.65);
-          ctx.fillRect(tmp[0] - s / 2, tmp[1] - s / 2, s, s);
+          b = Math.min(BUCKETS - 1, (z * BUCKETS) | 0);
+          var off = b * count * 3 + bucketLen[b] * 3;
+          bucketPts[off] = x0; bucketPts[off + 1] = y0; bucketPts[off + 2] = z;
+          bucketLen[b]++;
         }
       }
+      ctx.fillStyle = rgba(c, 0.06);
+      ctx.fill();
+      for (b = 0; b < BUCKETS; b++) {
+        var n = bucketLen[b];
+        if (!n) continue;
+        var zb = (b + 0.5) / BUCKETS;
+        ctx.fillStyle = rgba(zb > 0.55 ? pale : c, 0.35 + zb * 0.65);
+        ctx.beginPath();
+        var base0 = b * count * 3;
+        for (var j = 0; j < n; j++) {
+          var o = base0 + j * 3;
+          var s = dot * (0.65 + bucketPts[o + 2] * 0.55);
+          ctx.rect(bucketPts[o] - s / 2, bucketPts[o + 1] - s / 2, s, s);
+        }
+        ctx.fill();
+      }
 
-      // Borde luminoso
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = rgba(c, 0.6);
-      ctx.shadowColor = rgba(c, 0.9);
-      ctx.shadowBlur = 20;
-      ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
-      ctx.shadowBlur = 0;
+      // Borde luminoso: halo con trazos anchos semitransparentes
+      // (mismo efecto que shadowBlur pero mucho más barato)
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
+      ctx.strokeStyle = rgba(c, 0.07); ctx.lineWidth = 16; ctx.stroke();
+      ctx.strokeStyle = rgba(c, 0.12); ctx.lineWidth = 8; ctx.stroke();
+      ctx.strokeStyle = rgba(c, 0.6); ctx.lineWidth = 1.5; ctx.stroke();
 
       // Santiago con pulso
       var h = project(Math.cos(HOME.lat * DEG) * Math.sin(HOME.lon * DEG), Math.sin(HOME.lat * DEG), Math.cos(HOME.lat * DEG) * Math.cos(HOME.lon * DEG), [0, 0, 0]);
@@ -284,6 +320,7 @@
 
     function draw() {
       ctx.clearRect(0, 0, W, H);
+      updateRot();
       drawStars();
       drawShootingStar();
       ctx.globalAlpha = cur.alpha;
@@ -321,7 +358,16 @@
       tiltTarget = (18 + (e.clientY / H - 0.5) * 14) * DEG;
     }, { passive: true });
 
-    window.addEventListener('resize', function () { resize(); if (reduced) draw(); });
+    // Resize agrupado en un frame (evita reconstruir el canvas decenas de veces)
+    var resizeRaf = 0;
+    window.addEventListener('resize', function () {
+      if (resizeRaf) return;
+      resizeRaf = requestAnimationFrame(function () {
+        resizeRaf = 0;
+        resize();
+        if (reduced) draw();
+      });
+    });
 
     document.addEventListener('visibilitychange', function () {
       if (reduced) return;

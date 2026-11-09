@@ -30,7 +30,9 @@
   <!-- Fondo: degradado + olas + planeta (canvas) + capa glass -->
   <div class="backdrop" aria-hidden="true">
     <div class="backdrop__mesh"></div>
-    <svg class="backdrop__waves" viewBox="0 0 1440 900" preserveAspectRatio="none">
+    <!-- Cada ola es un <svg> propio (2× de ancho) que se desplaza con transform:
+         así la animación corre en la GPU sin repintar el SVG en cada frame -->
+    <svg class="backdrop__defs" width="0" height="0" focusable="false">
       <defs>
         <linearGradient id="wave-a" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" class="stop-ember" stop-opacity="0"/>
@@ -42,12 +44,12 @@
           <stop offset="1" class="stop-y" stop-opacity=".02"/>
         </linearGradient>
       </defs>
-      <!-- Curvas periódicas (período 720/1440) para que el desplazamiento sea continuo -->
-      <g class="wave wave--1"><path fill="url(#wave-a)" d="M0 560 C240 470 480 650 720 560 S1200 650 1440 560 S1920 650 2160 560 S2640 650 2880 560 V900 H0Z"/></g>
-      <g class="wave wave--2"><path fill="url(#wave-b)" d="M0 650 C240 720 480 580 720 650 S1200 580 1440 650 S1920 580 2160 650 S2640 580 2880 650 V900 H0Z"/></g>
-      <g class="wave wave--3"><path class="wave-line wave-line--a" d="M0 500 C240 420 480 580 720 500 S1200 580 1440 500 S1920 580 2160 500 S2640 580 2880 500"/></g>
-      <g class="wave wave--4"><path class="wave-line wave-line--b" d="M0 320 C480 260 960 380 1440 320 S2400 380 2880 320"/></g>
     </svg>
+    <!-- Curvas periódicas (período 720/1440) para que el desplazamiento sea continuo -->
+    <svg class="wave wave--1" viewBox="0 0 2880 900" preserveAspectRatio="none"><path fill="url(#wave-a)" d="M0 560 C240 470 480 650 720 560 S1200 650 1440 560 S1920 650 2160 560 S2640 650 2880 560 V900 H0Z"/></svg>
+    <svg class="wave wave--2" viewBox="0 0 2880 900" preserveAspectRatio="none"><path fill="url(#wave-b)" d="M0 650 C240 720 480 580 720 650 S1200 580 1440 650 S1920 580 2160 650 S2640 580 2880 650 V900 H0Z"/></svg>
+    <svg class="wave wave--3" viewBox="0 0 2880 900" preserveAspectRatio="none"><path class="wave-line wave-line--a" d="M0 500 C240 420 480 580 720 500 S1200 580 1440 500 S1920 580 2160 500 S2640 580 2880 500"/></svg>
+    <svg class="wave wave--4" viewBox="0 0 2880 900" preserveAspectRatio="none"><path class="wave-line wave-line--b" d="M0 320 C480 260 960 380 1440 320 S2400 380 2880 320"/></svg>
     <canvas id="globe" class="backdrop__globe"></canvas>
     <div class="backdrop__glass"></div>
   </div>
@@ -186,6 +188,7 @@
         <p class="eyebrow reveal" data-type>Developer profile</p>
         <h2 class="section-title reveal">Mi perfil <span class="grad">en código</span></h2>
         <div class="editor-wrap reveal">
+          <div class="editor-glow" aria-hidden="true"></div>
           <div class="editor" id="editor">
             <div class="editor__bar"><i></i><i></i><i></i><b>matias.js</b><em>READY</em></div>
             <pre class="editor__code"><code data-type="code"><span class="ln"><span class="k">const</span> <span class="f">matias</span> <span class="p">=</span> <span class="p">{</span></span>
