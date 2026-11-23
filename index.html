@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
+<html lang="es" data-grimoire="cinco">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Matias Moya — Portafolio</title>
   <meta name="description" content="Matias Moya — Capacity Planning en Aerosan y estudiante de Ingeniería en Informática en DUOC UC. Datos, Machine Learning y desarrollo web.">
-  <meta name="theme-color" content="#E6E9E6">
+  <meta name="theme-color" content="#080807">
   <meta property="og:title" content="Matias Moya — Portafolio">
   <meta property="og:description" content="Capacity Planning · Datos · Desarrollo web. Santiago, Chile.">
   <meta property="og:type" content="website">
@@ -13,13 +13,12 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@500;700;800;900&family=Grenze:wght@500;600;700;800&family=Bebas+Neue&family=Noto+Serif+JP:wght@400;600;900&family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
   <link rel="stylesheet" href="css/styles.css">
 
-  <!-- Aplica el tema guardado antes de pintar (evita parpadeo) -->
+  <!-- Aplica el grimorio guardado antes de pintar (evita parpadeo) -->
   <script src="js/theme-init.js"></script>
-  <script src="js/world-dots.js" defer></script>
-  <script src="js/globe.js" defer></script>
+  <script src="js/mana.js" defer></script>
   <script src="js/typewriter.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js" defer></script>
   <script src="js/main.js" defer></script>
@@ -27,45 +26,118 @@
 <body>
   <a class="skip-link" href="#main">Saltar al contenido</a>
 
-  <!-- Fondo: degradado + olas + planeta (canvas) + capa glass -->
+  <!-- Corona del Rey Mago -->
+  <svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
+    <symbol id="crown" viewBox="0 0 24 24">
+      <path d="M3 17.5h18L19.6 7.8l-4.6 4-3-7.3-3 7.3-4.6-4z"/>
+      <path d="M3.5 20.5h17M12 9.6v.01"/>
+    </symbol>
+  </svg>
+
+  <!-- ═══ FONDO ═══ cielo de maná + círculo mágico + partículas (canvas) -->
   <div class="backdrop" aria-hidden="true">
-    <div class="backdrop__mesh"></div>
-    <!-- Cada ola es un <svg> propio (2× de ancho) que se desplaza con transform:
-         así la animación corre en la GPU sin repintar el SVG en cada frame -->
+    <div class="backdrop__sky"></div>
+    <div class="backdrop__grid"></div>
+
+    <!-- Círculo mágico · 五つ葉 (antimagia) -->
+    <svg class="circle circle--cinco" viewBox="0 0 400 400" focusable="false">
+      <circle class="circle__ring circle__ring--runes" cx="200" cy="200" r="186"/>
+      <circle class="circle__ring" cx="200" cy="200" r="168"/>
+      <circle class="circle__ring circle__ring--dash" cx="200" cy="200" r="150"/>
+      <circle class="circle__ring" cx="200" cy="200" r="96"/>
+      <path class="circle__crack" d="M200 14l-18 84 30 40-24 56 26 50-16 98"/>
+      <g class="circle__clover" transform="translate(200 200) scale(.92)">
+        <path class="leaf" transform="rotate(0)"   d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(72)"  d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(144)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(216)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(288)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+      </g>
+    </svg>
+
+    <!-- Círculo mágico · 四つ葉 -->
+    <svg class="circle circle--cuatro" viewBox="0 0 400 400" focusable="false">
+      <circle class="circle__ring circle__ring--runes" cx="200" cy="200" r="186"/>
+      <circle class="circle__ring" cx="200" cy="200" r="164"/>
+      <circle class="circle__ring circle__ring--dash" cx="200" cy="200" r="138"/>
+      <circle class="circle__ring" cx="200" cy="200" r="92"/>
+      <g class="circle__clover" transform="translate(200 200) scale(.92)">
+        <path class="leaf" transform="rotate(0)"   d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(90)"  d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(180)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(270)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+      </g>
+    </svg>
+
+    <!-- Círculo mágico · 三つ葉 (amanecer dorado) -->
+    <svg class="circle circle--tres" viewBox="0 0 400 400" focusable="false">
+      <circle class="circle__ring circle__ring--rays" cx="200" cy="200" r="182"/>
+      <circle class="circle__ring" cx="200" cy="200" r="158"/>
+      <circle class="circle__ring circle__ring--dash" cx="200" cy="200" r="134"/>
+      <circle class="circle__ring" cx="200" cy="200" r="88"/>
+      <g class="circle__clover" transform="translate(200 200) scale(.92)">
+        <path class="leaf" transform="rotate(0)"   d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(120)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(240)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+      </g>
+    </svg>
+
+    <!-- Escudo de la orden activa, abajo a la derecha -->
+    <div class="order-crest">
+      <img class="order-crest__img crest__bulls" src="img/orden-toros-negros.png" alt="">
+      <img class="order-crest__img crest__lions" src="img/orden-leones-carmesi.png" alt="">
+      <img class="order-crest__img crest__dawn" src="img/orden-amanecer-dorado.png" alt="">
+    </div>
+
+    <!-- Corrientes de maná al pie -->
     <svg class="backdrop__defs" width="0" height="0" focusable="false">
       <defs>
-        <linearGradient id="wave-a" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" class="stop-ember" stop-opacity="0"/>
-          <stop offset=".5" class="stop-y" stop-opacity=".14"/>
-          <stop offset="1" class="stop-ember" stop-opacity="0"/>
+        <linearGradient id="mn-a" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" class="stop-ac" stop-opacity="0"/>
+          <stop offset=".5" class="stop-ac" stop-opacity=".2"/>
+          <stop offset="1" class="stop-ac" stop-opacity="0"/>
         </linearGradient>
-        <linearGradient id="wave-b" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" class="stop-ember" stop-opacity=".12"/>
-          <stop offset="1" class="stop-y" stop-opacity=".02"/>
+        <linearGradient id="mn-b" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" class="stop-ac2" stop-opacity=".16"/>
+          <stop offset="1" class="stop-ac" stop-opacity=".02"/>
         </linearGradient>
       </defs>
     </svg>
-    <!-- Curvas periódicas (período 720/1440) para que el desplazamiento sea continuo -->
-    <svg class="wave wave--1" viewBox="0 0 2880 900" preserveAspectRatio="none"><path fill="url(#wave-a)" d="M0 560 C240 470 480 650 720 560 S1200 650 1440 560 S1920 650 2160 560 S2640 650 2880 560 V900 H0Z"/></svg>
-    <svg class="wave wave--2" viewBox="0 0 2880 900" preserveAspectRatio="none"><path fill="url(#wave-b)" d="M0 650 C240 720 480 580 720 650 S1200 580 1440 650 S1920 580 2160 650 S2640 580 2880 650 V900 H0Z"/></svg>
-    <svg class="wave wave--3" viewBox="0 0 2880 900" preserveAspectRatio="none"><path class="wave-line wave-line--a" d="M0 500 C240 420 480 580 720 500 S1200 580 1440 500 S1920 580 2160 500 S2640 580 2880 500"/></svg>
-    <svg class="wave wave--4" viewBox="0 0 2880 900" preserveAspectRatio="none"><path class="wave-line wave-line--b" d="M0 320 C480 260 960 380 1440 320 S2400 380 2880 320"/></svg>
-    <canvas id="globe" class="backdrop__globe"></canvas>
-    <div class="backdrop__glass"></div>
+    <svg class="stream stream--1" viewBox="0 0 2880 900" preserveAspectRatio="none"><path fill="url(#mn-a)" d="M0 560C240 470 480 650 720 560S1200 650 1440 560 1920 650 2160 560 2640 650 2880 560V900H0Z"/></svg>
+    <svg class="stream stream--2" viewBox="0 0 2880 900" preserveAspectRatio="none"><path fill="url(#mn-b)" d="M0 650C240 720 480 580 720 650S1200 580 1440 650 1920 580 2160 650 2640 580 2880 650V900H0Z"/></svg>
+    <svg class="stream stream--3" viewBox="0 0 2880 900" preserveAspectRatio="none"><path class="stream-line stream-line--a" d="M0 500C240 420 480 580 720 500S1200 580 1440 500 1920 580 2160 500 2640 580 2880 500"/></svg>
+    <svg class="stream stream--4" viewBox="0 0 2880 900" preserveAspectRatio="none"><path class="stream-line stream-line--b" d="M0 320C480 260 960 380 1440 320S2400 380 2880 320"/></svg>
+
+    <canvas id="mana" class="backdrop__canvas"></canvas>
+
+    <!-- Hojas / chispas / polvo dorado según el grimorio -->
+    <div class="fall fall--1"></div>
+    <div class="fall fall--2"></div>
+    <div class="fall fall--3"></div>
+
+    <div class="backdrop__veil"></div>
   </div>
-  <div class="progress" id="progress" aria-hidden="true"></div>
-  <div class="spotlight" aria-hidden="true"></div>
+
+  <!-- Medidor de maná (progreso de scroll) -->
+  <div class="mana-bar" id="progress" aria-hidden="true"></div>
+  <!-- Aura que sigue al cursor -->
+  <div class="aura" aria-hidden="true"></div>
+  <!-- Conjuro que barre la pantalla al cambiar de grimorio -->
+  <div class="spellcast" id="spellcast" aria-hidden="true"><i class="spellcast__page"></i><i class="spellcast__ring"></i><i class="spellcast__flash"></i></div>
 
   <header class="nav">
-    <a href="#hero" class="nav__logo" aria-label="Inicio">&lt;MM/&gt;</a>
+    <a href="#hero" class="nav__logo" aria-label="Inicio">
+      <span class="nav__logo-kanji" aria-hidden="true">魔</span>
+      <span class="nav__logo-txt">&lt;MM/&gt;</span>
+    </a>
     <nav aria-label="Principal">
       <ul class="nav__links">
-        <li><a href="#sobre">Perfil</a></li>
-        <li><a href="#experiencia">Experiencia</a></li>
-        <li><a href="#servicios">Servicios</a></li>
-        <li><a href="#proyectos">Proyectos</a></li>
-        <li><a href="#stack">Stack</a></li>
-        <li><a href="#contacto">Contacto</a></li>
+        <li><a href="#sobre"><span class="nav__k" aria-hidden="true">書</span>Perfil</a></li>
+        <li><a href="#experiencia"><span class="nav__k" aria-hidden="true">歴</span>Experiencia</a></li>
+        <li><a href="#servicios"><span class="nav__k" aria-hidden="true">魔</span>Hechizos</a></li>
+        <li><a href="#proyectos"><span class="nav__k" aria-hidden="true">戦</span>Proyectos</a></li>
+        <li><a href="#stack"><span class="nav__k" aria-hidden="true">具</span>Stack</a></li>
+        <li><a href="#contacto"><span class="nav__k" aria-hidden="true">伝</span>Contacto</a></li>
       </ul>
     </nav>
     <div class="nav__end">
@@ -75,16 +147,37 @@
       <a href="https://github.com/twistyasap" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="GitHub">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.03-2.682-.103-.253-.447-1.27.098-2.646 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.376.202 2.393.1 2.646.64.698 1.028 1.591 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
       </a>
-      <button type="button" class="icon-btn" id="theme-toggle" aria-label="Cambiar tema">
-        <svg class="icon-moon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        <svg class="icon-sun" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-      </button>
+
+      <!-- Selector de grimorio: 3 · 4 · 5 hojas -->
+      <div class="grim-switch" id="grim-switch" role="radiogroup" aria-label="Grimorio del sitio">
+        <span class="grim-switch__mark" aria-hidden="true"></span>
+        <button type="button" class="grim-switch__btn" role="radio" aria-checked="true" data-grimoire="cinco" title="Grimorio de cinco hojas · Orden de los Toros Negros">
+          <svg viewBox="-60 -60 120 120" aria-hidden="true" class="clover">
+            <g><path transform="rotate(0)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(72)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(144)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(216)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(288)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/></g>
+          </svg>
+          <span class="visually-hidden">Cinco hojas</span>
+        </button>
+        <button type="button" class="grim-switch__btn" role="radio" aria-checked="false" tabindex="-1" data-grimoire="cuatro" title="Grimorio de cuatro hojas · Orden de los Leones Carmesí">
+          <svg viewBox="-60 -60 120 120" aria-hidden="true" class="clover">
+            <g><path transform="rotate(0)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(90)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(180)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(270)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/></g>
+          </svg>
+          <span class="visually-hidden">Cuatro hojas</span>
+        </button>
+        <button type="button" class="grim-switch__btn" role="radio" aria-checked="false" tabindex="-1" data-grimoire="tres" title="Grimorio de tres hojas · Orden del Amanecer Dorado">
+          <svg viewBox="-60 -60 120 120" aria-hidden="true" class="clover">
+            <g><path transform="rotate(0)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(120)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(240)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/></g>
+          </svg>
+          <span class="visually-hidden">Tres hojas</span>
+        </button>
+      </div>
     </div>
   </header>
 
   <main id="main">
-    <!-- ─── HERO ─── composición centrada; el planeta asoma abajo como horizonte -->
+    <!-- ─── HERO ─── -->
     <section class="hero" id="hero">
+      <span class="hero__watermark" aria-hidden="true"></span>
+
       <div class="hero__top">
         <p class="pill"><span class="dot" aria-hidden="true"></span>Disponible para proyectos</p>
         <p class="hero__meta">
@@ -97,6 +190,11 @@
       </div>
 
       <div class="hero__center">
+        <p class="hero__grim" aria-hidden="true">
+          <span class="hero__grim-k"></span>
+          <span class="crest"><img class="crest__bulls" src="img/orden-toros-negros.png" alt=""><img class="crest__lions" src="img/orden-leones-carmesi.png" alt=""><img class="crest__dawn" src="img/orden-amanecer-dorado.png" alt=""></span>
+          <span class="hero__grim-txt"></span>
+        </p>
         <p class="hero__kicker">
           <span class="hero__kicker-line" aria-hidden="true"></span>
           Capacity Planning @ Aerosan · Ing. Informática DUOC UC
@@ -106,9 +204,10 @@
           <span class="hero__line">Matias</span>
           <span class="hero__line hero__line--grad">Moya</span>
         </h1>
+        <span class="hero__rune" aria-hidden="true"></span>
         <p class="hero__role">
           <span class="visually-hidden">Capacity Planning, análisis de datos y desarrollo web</span>
-          <span aria-hidden="true"><span class="hero__prompt">~/matias $</span> <span id="role-rotator" data-words="Capacity Planning|Análisis de datos|Desarrollo web|Machine Learning">Capacity Planning</span><span class="tw-caret"></span></span>
+          <span aria-hidden="true"><span class="hero__prompt">魔導書 $</span> <span id="role-rotator" data-words="Capacity Planning|Análisis de datos|Desarrollo web|Machine Learning|Aspirante a Rey Mago">Capacity Planning</span><span class="tw-caret"></span></span>
         </p>
         <p class="hero__desc">Convierto <strong>datos en decisiones</strong> y <strong>código en herramientas útiles</strong>, desde la planificación operativa hasta la web.</p>
         <div class="hero__ctas">
@@ -140,43 +239,139 @@
       </ul>
     </div>
 
-    <!-- ─── PERFIL ─── -->
+    <!-- ─── PERFIL · GRIMORIO INTERACTIVO ─── -->
     <section class="panel panel--alt" id="sobre">
       <div class="panel__inner">
-        <span class="panel__num" aria-hidden="true">01</span>
+        <span class="panel__num" data-kanji="壱" aria-hidden="true">01</span>
         <div class="sobre__grid">
-          <div>
-            <p class="eyebrow reveal" data-type>Perfil</p>
+          <div class="sobre__intro">
+            <p class="eyebrow reveal" data-kanji="書" data-type>Perfil</p>
             <h2 class="section-title reveal">Más que <span class="grad">código</span></h2>
             <div class="sobre__body reveal">
               <p>Soy <strong>Matias Moya</strong>, estudiante de octavo semestre de Ingeniería en Informática en <strong>DUOC UC</strong> y actualmente trabajo en <strong>Capacity Planning en Aerosan</strong>, donde los datos se traducen en turnos, recursos y operación real.</p>
-              <p>Trabajo con <strong>Python, Pandas y Scikit-learn</strong> para análisis y Machine Learning, y con <strong>React, Angular, Node.js, Spring Boot, Django y Firebase</strong> para desarrollo web. También manejo <strong>Google Cloud Platform</strong> y Excel a nivel avanzado.</p>
-              <p>Me interesa el lado técnico tanto como el resultado: código que resuelve un problema real, no solo uno que funciona en el lab.</p>
+              <p>Trabajo con <strong>Python, Pandas y Scikit-learn</strong> para análisis y Machine Learning, y con <strong>React, Angular, Node.js, Spring Boot, Django y Firebase</strong> para desarrollo web.</p>
+            </div>
+            <p class="sobre__cue reveal">
+              <span class="sobre__cue-ico" aria-hidden="true">✶</span>
+              Mi grimorio tiene cuatro hechizos. Ábrelo y pasa las páginas.
+            </p>
+          </div>
+
+          <!-- ══ GRIMORIO ══ -->
+          <div class="grimoire reveal" id="grimoire">
+            <div class="grimoire__stage">
+              <!-- Hojas que salen despedidas al abrir (3, 4 o 5 según el grimorio) -->
+              <div class="grimoire__leaves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+              <!-- Tapa -->
+              <button type="button" class="grimoire__cover" id="grimoire-open" aria-expanded="false" aria-controls="grimoire-book">
+                <span class="grimoire__cover-orn" aria-hidden="true"></span>
+                <span class="grimoire__cover-clover" aria-hidden="true">
+                  <svg viewBox="-70 -70 140 140" class="clover clover--5">
+                    <g><path transform="rotate(0)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(72)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(144)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(216)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(288)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/></g>
+                  </svg>
+                  <svg viewBox="-70 -70 140 140" class="clover clover--4">
+                    <g><path transform="rotate(0)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(90)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(180)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(270)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/></g>
+                  </svg>
+                  <svg viewBox="-70 -70 140 140" class="clover clover--3">
+                    <g><path transform="rotate(0)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(120)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(240)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/></g>
+                  </svg>
+                </span>
+                <span class="grimoire__cover-ttl">Grimorio</span>
+                <span class="grimoire__cover-order" aria-hidden="true">
+                  <span class="crest"><img class="crest__bulls" src="img/orden-toros-negros.png" alt=""><img class="crest__lions" src="img/orden-leones-carmesi.png" alt=""><img class="crest__dawn" src="img/orden-amanecer-dorado.png" alt=""></span>
+                  <span class="grimoire__cover-order-txt"></span>
+                </span>
+                <span class="grimoire__cover-sub">Abrir grimorio</span>
+              </button>
+
+              <!-- Libro abierto -->
+              <div class="grimoire__book" id="grimoire-book">
+                <!-- Página izquierda: índice de hechizos -->
+                <div class="grimoire__page grimoire__page--left">
+                  <span class="grimoire__seal" aria-hidden="true"></span>
+                  <p class="grimoire__label">Índice de hechizos</p>
+                  <ul class="grimoire__index" role="tablist" aria-label="Hechizos del grimorio">
+                    <li><button type="button" role="tab" class="grimoire__chapter" id="gch-0" aria-controls="gsp-0" aria-selected="true"><em>I</em><span>Planificación &amp; capacidad</span></button></li>
+                    <li><button type="button" role="tab" class="grimoire__chapter" id="gch-1" aria-controls="gsp-1" aria-selected="false" tabindex="-1"><em>II</em><span>Datos &amp; Machine Learning</span></button></li>
+                    <li><button type="button" role="tab" class="grimoire__chapter" id="gch-2" aria-controls="gsp-2" aria-selected="false" tabindex="-1"><em>III</em><span>Desarrollo web</span></button></li>
+                    <li><button type="button" role="tab" class="grimoire__chapter" id="gch-3" aria-controls="gsp-3" aria-selected="false" tabindex="-1"><em>IV</em><span>Metodología</span></button></li>
+                  </ul>
+                  <p class="grimoire__owner">
+                    <span class="grimoire__owner-k" aria-hidden="true">魔導書</span>
+                    <span class="grimoire__owner-n">Matias Moya</span>
+                    <span class="grimoire__owner-r" aria-hidden="true"></span>
+                    <span class="grimoire__owner-o" aria-hidden="true"></span>
+                  </p>
+                  <button type="button" class="grimoire__close" id="grimoire-close">Cerrar</button>
+                </div>
+
+                <span class="grimoire__spine" aria-hidden="true"></span>
+
+                <!-- Página derecha: el hechizo abierto -->
+                <div class="grimoire__page grimoire__page--right">
+                  <span class="grimoire__sigil" aria-hidden="true"></span>
+
+                  <article class="spell" role="tabpanel" id="gsp-0" aria-labelledby="gch-0" tabindex="0">
+                    <p class="spell__kind"><span class="spell__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-7"/></svg></span>Magia de previsión</p>
+                    <h3 class="spell__title">Planificación &amp; capacidad</h3>
+                    <p class="spell__desc">Proyección de demanda, dimensionamiento de recursos y seguimiento de indicadores operacionales para que la operación nunca quede corta ni sobredimensionada.</p>
+                    <ul class="spell__list">
+                      <li>Forecast de demanda</li><li>Dimensionamiento de turnos</li><li>KPIs operacionales</li><li>Escenarios what-if</li>
+                    </ul>
+                    <p class="spell__meter"><span class="spell__meter-lbl">Afinidad</span><span class="spell__meter-bar"><i style="--v:92%"></i></span><b class="spell__meter-val" data-meter="92">92</b></p>
+                    <svg class="spell__spark" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 32L20 28 40 30 60 20 80 24 100 14 120 18 140 8 160 12 180 4 200 6"/></svg>
+                  </article>
+
+                  <article class="spell" role="tabpanel" id="gsp-1" aria-labelledby="gch-1" tabindex="0" hidden>
+                    <p class="spell__kind"><span class="spell__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="10" cy="18" r="2.5"/><path d="M8 7l8 1M7.5 8l2 8M12 17l5-7"/></svg></span>Magia de patrones</p>
+                    <h3 class="spell__title">Datos &amp; Machine Learning</h3>
+                    <p class="spell__desc">Clasificación, regresión y clustering siguiendo CRISP-DM. Del dato crudo al modelo validado, y del modelo al tablero que alguien usa para decidir.</p>
+                    <ul class="spell__list">
+                      <li>Regresión logística</li><li>K-Means</li><li>CRISP-DM</li><li>Power BI</li><li>BigQuery</li>
+                    </ul>
+                    <p class="spell__meter"><span class="spell__meter-lbl">Afinidad</span><span class="spell__meter-bar"><i style="--v:88%"></i></span><b class="spell__meter-val" data-meter="88">88</b></p>
+                    <svg class="spell__spark" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 36L22 30 44 32 66 18 88 22 110 12 132 16 154 6 176 10 200 2"/></svg>
+                  </article>
+
+                  <article class="spell" role="tabpanel" id="gsp-2" aria-labelledby="gch-2" tabindex="0" hidden>
+                    <p class="spell__kind"><span class="spell__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></span>Magia de creación</p>
+                    <h3 class="spell__title">Desarrollo web</h3>
+                    <p class="spell__desc">React, Angular y Tailwind al frente; Django, Node.js, Spring Boot y Firebase detrás. Interfaces rápidas y APIs que aguantan el uso real.</p>
+                    <ul class="spell__list">
+                      <li>React / Angular</li><li>APIs REST</li><li>Django · Node · Spring</li><li>Deploy en Vercel</li>
+                    </ul>
+                    <p class="spell__meter"><span class="spell__meter-lbl">Afinidad</span><span class="spell__meter-bar"><i style="--v:85%"></i></span><b class="spell__meter-val" data-meter="85">85</b></p>
+                    <svg class="spell__spark" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 28L25 24 50 30 75 16 100 20 125 10 150 14 175 6 200 8"/></svg>
+                  </article>
+
+                  <article class="spell" role="tabpanel" id="gsp-3" aria-labelledby="gch-3" tabindex="0" hidden>
+                    <p class="spell__kind"><span class="spell__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg></span>Magia de orden</p>
+                    <h3 class="spell__title">Metodología</h3>
+                    <p class="spell__desc">CRISP-DM, Scrum y principios REST, pensando siempre en el usuario final y no solo en el modelo: código que resuelve un problema real, no uno de laboratorio.</p>
+                    <ul class="spell__list">
+                      <li>CRISP-DM</li><li>Scrum</li><li>REST</li><li>Documentación</li>
+                    </ul>
+                    <p class="spell__meter"><span class="spell__meter-lbl">Afinidad</span><span class="spell__meter-bar"><i style="--v:90%"></i></span><b class="spell__meter-val" data-meter="90">90</b></p>
+                    <svg class="spell__spark" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 34L20 26 40 28 60 22 80 16 100 20 120 12 140 14 170 6 200 4"/></svg>
+                  </article>
+
+                  <footer class="grimoire__foot">
+                    <button type="button" class="grimoire__arrow" data-dir="-1" aria-label="Hechizo anterior">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <span class="grimoire__folio" id="grimoire-folio" aria-live="polite">I / IV</span>
+                    <button type="button" class="grimoire__arrow" data-dir="1" aria-label="Hechizo siguiente">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+                    </button>
+                  </footer>
+                </div>
+
+                <!-- Hoja que gira al pasar de página -->
+                <div class="grimoire__flip" aria-hidden="true"><i class="grimoire__flip-front"></i><i class="grimoire__flip-back"></i></div>
+              </div>
             </div>
           </div>
-          <ul class="bento">
-            <li class="bento__item bento__item--wide glass glow-border reveal">
-              <span class="bento__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-7"/></svg></span>
-              <h3 data-type>Planificación & capacidad</h3>
-              <p>Proyección de demanda, dimensionamiento de recursos y seguimiento de indicadores operacionales.</p>
-              <svg class="bento__spark" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 32 L20 28 L40 30 L60 20 L80 24 L100 14 L120 18 L140 8 L160 12 L180 4 L200 6"/></svg>
-            </li>
-            <li class="bento__item glass glow-border reveal">
-              <span class="bento__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="10" cy="18" r="2.5"/><path d="M8 7l8 1M7.5 8l2 8M12 17l5-7"/></svg></span>
-              <h3 data-type>Datos & ML</h3>
-              <p>Clasificación, regresión y clustering con CRISP-DM, Power BI y BigQuery.</p>
-            </li>
-            <li class="bento__item glass glow-border reveal">
-              <span class="bento__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></span>
-              <h3 data-type>Desarrollo web</h3>
-              <p>React, Angular y Tailwind al frente; Django, Node.js, Spring Boot y Firebase detrás.</p>
-            </li>
-            <li class="bento__item bento__item--wide glass glow-border reveal">
-              <span class="bento__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg></span>
-              <h3 data-type>Metodología</h3>
-              <p>CRISP-DM, Scrum y principios REST, pensando siempre en el usuario final, no solo en el modelo.</p>
-            </li>
-          </ul>
         </div>
       </div>
     </section>
@@ -184,8 +379,8 @@
     <!-- ─── PERFIL EN CÓDIGO ─── -->
     <section class="panel" id="perfil-dev">
       <div class="panel__inner">
-        <span class="panel__num" aria-hidden="true">02</span>
-        <p class="eyebrow reveal" data-type>Developer profile</p>
+        <span class="panel__num" data-kanji="弐" aria-hidden="true">02</span>
+        <p class="eyebrow reveal" data-kanji="詠" data-type>Developer profile</p>
         <h2 class="section-title reveal">Mi perfil <span class="grad">en código</span></h2>
         <div class="editor-wrap reveal">
           <div class="editor-glow" aria-hidden="true"></div>
@@ -212,8 +407,8 @@
     <!-- ─── EXPERIENCIA ─── (pestañas) -->
     <section class="panel panel--alt" id="experiencia">
       <div class="panel__inner">
-        <span class="panel__num" aria-hidden="true">03</span>
-        <p class="eyebrow reveal" data-type>Trayectoria</p>
+        <span class="panel__num" data-kanji="参" aria-hidden="true">03</span>
+        <p class="eyebrow reveal" data-kanji="任" data-type>Historial de misiones</p>
         <h2 class="section-title reveal">Experiencia <span class="grad">profesional</span></h2>
 
         <div class="xp reveal" data-tabs>
@@ -238,12 +433,13 @@
 
           <div class="xp__panels">
             <article class="xp__panel glass" role="tabpanel" id="panel-cp" aria-labelledby="tab-cp" tabindex="0">
+              <span class="xp__seal" aria-hidden="true">壱</span>
               <header class="xp__head">
                 <div>
                   <h3 class="xp__role">Capacity Planning</h3>
                   <p class="xp__company">Aerosan · Santiago, Chile</p>
                 </div>
-                <span class="chip chip--live"><span class="dot" aria-hidden="true"></span>Actual</span>
+                <span class="chip chip--live"><span class="dot" aria-hidden="true"></span>Misión en curso</span>
               </header>
               <ul class="xp__list">
                 <li>Proyección de demanda y dimensionamiento de personal y recursos para la operación.</li>
@@ -254,12 +450,13 @@
             </article>
 
             <article class="xp__panel glass" role="tabpanel" id="panel-qa" aria-labelledby="tab-qa" tabindex="0" hidden>
+              <span class="xp__seal" aria-hidden="true">弐</span>
               <header class="xp__head">
                 <div>
                   <h3 class="xp__role">Data / QA Analyst</h3>
                   <p class="xp__company">Aerosan · Santiago, Chile</p>
                 </div>
-                <span class="chip">Anterior</span>
+                <span class="chip">Misión cumplida</span>
               </header>
               <ul class="xp__list">
                 <li>Validación de datos y aseguramiento de calidad en procesos y reportes internos.</li>
@@ -269,12 +466,13 @@
             </article>
 
             <article class="xp__panel glass" role="tabpanel" id="panel-fl" aria-labelledby="tab-fl" tabindex="0" hidden>
+              <span class="xp__seal" aria-hidden="true">参</span>
               <header class="xp__head">
                 <div>
                   <h3 class="xp__role">Desarrollador freelance</h3>
                   <p class="xp__company">Proyectos independientes</p>
                 </div>
-                <span class="chip">Freelance</span>
+                <span class="chip">Misión libre</span>
               </header>
               <ul class="xp__list">
                 <li>Diseño y desarrollo de sitios y aplicaciones web a medida, desde la interfaz hasta el despliegue.</li>
@@ -284,12 +482,13 @@
             </article>
 
             <article class="xp__panel glass" role="tabpanel" id="panel-edu" aria-labelledby="tab-edu" tabindex="0" hidden>
+              <span class="xp__seal" aria-hidden="true">肆</span>
               <header class="xp__head">
                 <div>
                   <h3 class="xp__role">Ingeniería en Informática</h3>
                   <p class="xp__company">DUOC UC · Octavo semestre</p>
                 </div>
-                <span class="chip">Egreso 2026</span>
+                <span class="chip">Entrenamiento · 2026</span>
               </header>
               <ul class="xp__list">
                 <li>Formación en desarrollo de software, bases de datos, minería de datos y gestión de proyectos.</li>
@@ -302,15 +501,16 @@
       </div>
     </section>
 
-    <!-- ─── SERVICIOS ─── (paneles que se expanden al pasar el mouse) -->
+    <!-- ─── HECHIZOS / SERVICIOS ─── -->
     <section class="panel" id="servicios">
       <div class="panel__inner">
-        <span class="panel__num" aria-hidden="true">04</span>
-        <p class="eyebrow reveal" data-type>Servicios</p>
+        <span class="panel__num" data-kanji="肆" aria-hidden="true">04</span>
+        <p class="eyebrow reveal" data-kanji="魔" data-type>Hechizos</p>
         <h2 class="section-title reveal">Qué puedo <span class="grad">hacer por ti</span></h2>
         <ul class="services reveal">
           <li class="service" tabindex="0">
             <span class="service__num">01</span>
+            <span class="service__spell" aria-hidden="true">Magia de visión</span>
             <span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 15v-3M12 15V8M17 15v-5"/></svg></span>
             <h3 class="service__title">Dashboards &amp; BI</h3>
             <div class="service__body">
@@ -320,6 +520,7 @@
           </li>
           <li class="service" tabindex="0">
             <span class="service__num">02</span>
+            <span class="service__spell" aria-hidden="true">Magia de previsión</span>
             <span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/><circle cx="18" cy="8" r="1.5"/></svg></span>
             <h3 class="service__title">Planificación &amp; forecasting</h3>
             <div class="service__body">
@@ -329,6 +530,7 @@
           </li>
           <li class="service" tabindex="0">
             <span class="service__num">03</span>
+            <span class="service__spell" aria-hidden="true">Magia de creación</span>
             <span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></span>
             <h3 class="service__title">Desarrollo web</h3>
             <div class="service__body">
@@ -338,6 +540,7 @@
           </li>
           <li class="service" tabindex="0">
             <span class="service__num">04</span>
+            <span class="service__spell" aria-hidden="true">Magia de patrones</span>
             <span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span>
             <h3 class="service__title">Análisis, ML &amp; automatización</h3>
             <div class="service__body">
@@ -352,8 +555,8 @@
     <!-- ─── PROYECTOS ─── -->
     <section class="panel panel--alt" id="proyectos">
       <div class="panel__inner">
-        <span class="panel__num" aria-hidden="true">05</span>
-        <p class="eyebrow reveal" data-type>Proyectos</p>
+        <span class="panel__num" data-kanji="伍" aria-hidden="true">05</span>
+        <p class="eyebrow reveal" data-kanji="戦" data-type>Proyectos</p>
         <h2 class="section-title reveal">Lo que he <span class="grad">construido</span></h2>
         <div class="projects">
           <article class="project reveal" data-tilt>
@@ -392,30 +595,34 @@
     <!-- ─── PROCESO ─── (la línea se dibuja según el scroll) -->
     <section class="panel" id="proceso">
       <div class="panel__inner">
-        <span class="panel__num" aria-hidden="true">06</span>
-        <p class="eyebrow reveal" data-type>Proceso</p>
+        <span class="panel__num" data-kanji="陸" aria-hidden="true">06</span>
+        <p class="eyebrow reveal" data-kanji="帝" data-type>Camino al Rey Mago</p>
         <h2 class="section-title reveal">Cómo <span class="grad">trabajo</span></h2>
         <ol class="process" id="process">
           <li class="process__step reveal">
             <span class="process__node" aria-hidden="true">01</span>
+            <span class="process__rank" aria-hidden="true">魔導書授与 · Torre del Grimorio</span>
             <h3>Entender</h3>
             <p>Escucho el problema real, el contexto y qué decisión hay que tomar con el resultado.</p>
             <code class="process__cmd">git checkout -b idea</code>
           </li>
           <li class="process__step reveal">
             <span class="process__node" aria-hidden="true">02</span>
+            <span class="process__rank" aria-hidden="true">入団試験 · Examen de ingreso</span>
             <h3>Datos</h3>
             <p>Reúno, limpio y exploro la información para saber con qué cuento y qué falta.</p>
             <code class="process__cmd">df.describe()</code>
           </li>
           <li class="process__step reveal">
             <span class="process__node" aria-hidden="true">03</span>
+            <span class="process__rank" aria-hidden="true">任務 · Misión</span>
             <h3>Construir</h3>
             <p>Desarrollo el modelo, el dashboard o la app en iteraciones cortas y visibles.</p>
             <code class="process__cmd">npm run build</code>
           </li>
-          <li class="process__step reveal">
-            <span class="process__node" aria-hidden="true">04</span>
+          <li class="process__step process__step--king reveal">
+            <span class="process__node" aria-hidden="true"><svg class="process__crown"><use href="#crown"/></svg></span>
+            <span class="process__rank" aria-hidden="true">魔法帝 · Rey Mago</span>
             <h3>Medir</h3>
             <p>Valido con métricas, ajusto y documento para que la solución se pueda mantener.</p>
             <code class="process__cmd">git push origin main</code>
@@ -424,39 +631,39 @@
       </div>
     </section>
 
-    <!-- ─── STACK ─── (tarjetas tipo archivo de editor) -->
+    <!-- ─── STACK ─── (grimorios de herramientas) -->
     <section class="panel panel--alt" id="stack">
       <div class="panel__inner">
-        <span class="panel__num" aria-hidden="true">07</span>
-        <p class="eyebrow reveal" data-type>Tecnologías</p>
+        <span class="panel__num" data-kanji="漆" aria-hidden="true">07</span>
+        <p class="eyebrow reveal" data-kanji="具" data-type>Arsenal mágico</p>
         <h2 class="section-title reveal">Con qué <span class="grad">trabajo</span></h2>
         <div class="stack-grid">
-          <article class="stack-card glass glow-border reveal">
+          <article class="stack-card glass aura-border reveal">
             <header class="stack-card__bar"><i></i><i></i><i></i><span>frontend.js</span></header>
             <p class="stack-card__cat" data-type>frontend</p>
             <div class="tags" data-type-tags><span class="tag tag--hi">HTML</span><span class="tag tag--hi">CSS</span><span class="tag tag--hi">JavaScript</span><span class="tag tag--hi">React</span><span class="tag tag--hi">Angular</span><span class="tag tag--hi">TailwindCSS</span><span class="tag tag--hi">Vite</span></div>
           </article>
-          <article class="stack-card glass glow-border reveal">
+          <article class="stack-card glass aura-border reveal">
             <header class="stack-card__bar"><i></i><i></i><i></i><span>backend.js</span></header>
             <p class="stack-card__cat" data-type>backend</p>
             <div class="tags" data-type-tags><span class="tag tag--hi">Java</span><span class="tag tag--hi">Spring Boot</span><span class="tag tag--hi">Node.js</span><span class="tag tag--hi">NestJS</span><span class="tag tag--hi">Django</span><span class="tag tag--hi">Firebase</span><span class="tag tag--hi">PostgreSQL</span><span class="tag tag--hi">SQL / Oracle</span></div>
           </article>
-          <article class="stack-card glass glow-border reveal">
+          <article class="stack-card glass aura-border reveal">
             <header class="stack-card__bar"><i></i><i></i><i></i><span>data.py</span></header>
             <p class="stack-card__cat" data-type>dataML</p>
             <div class="tags" data-type-tags><span class="tag tag--hi">Python</span><span class="tag tag--hi">Pandas</span><span class="tag tag--hi">NumPy</span><span class="tag tag--hi">Scikit-learn</span><span class="tag tag--hi">K-Means</span><span class="tag tag--hi">Regresión</span></div>
           </article>
-          <article class="stack-card glass glow-border reveal">
+          <article class="stack-card glass aura-border reveal">
             <header class="stack-card__bar"><i></i><i></i><i></i><span>planning.xlsx</span></header>
             <p class="stack-card__cat" data-type>planificacion</p>
             <div class="tags" data-type-tags><span class="tag tag--hi">Capacity Planning</span><span class="tag tag--hi">Forecasting</span><span class="tag tag--hi">KPIs</span><span class="tag tag--hi">Power BI</span><span class="tag tag--hi">Excel Avanzado</span><span class="tag tag--hi">Power Query</span></div>
           </article>
-          <article class="stack-card glass glow-border reveal">
+          <article class="stack-card glass aura-border reveal">
             <header class="stack-card__bar"><i></i><i></i><i></i><span>cloud.yml</span></header>
             <p class="stack-card__cat" data-type>cloud</p>
             <div class="tags" data-type-tags><span class="tag tag--hi">Google Cloud Platform</span><span class="tag tag--hi">BigQuery</span><span class="tag tag--hi">Cloud Storage</span><span class="tag tag--hi">Vercel</span></div>
           </article>
-          <article class="stack-card glass glow-border reveal">
+          <article class="stack-card glass aura-border reveal">
             <header class="stack-card__bar"><i></i><i></i><i></i><span>tools.md</span></header>
             <p class="stack-card__cat" data-type>herramientas</p>
             <div class="tags" data-type-tags><span class="tag">Git / GitHub</span><span class="tag">Docker</span><span class="tag">VS Code</span><span class="tag">CRISP-DM</span><span class="tag">Scrum</span></div>
@@ -469,7 +676,7 @@
     <section class="cta" id="hablemos" aria-labelledby="cta-title">
       <div class="cta__inner glass reveal">
         <div class="cta__marquee" aria-hidden="true">
-          <span>datos · código · decisiones · datos · código · decisiones · </span><span>datos · código · decisiones · datos · código · decisiones · </span>
+          <span>no rendirse es mi magia · datos · código · decisiones · 魔法 · </span><span>no rendirse es mi magia · datos · código · decisiones · 魔法 · </span>
         </div>
         <h2 class="cta__title" id="cta-title">¿Tienes un proyecto <span class="grad">en mente?</span></h2>
         <p class="cta__sub">Cuéntame la idea y te respondo con una propuesta. Sin compromiso.</p>
@@ -482,15 +689,15 @@
     <!-- ─── CONTACTO ─── -->
     <section class="panel" id="contacto">
       <div class="panel__inner reveal">
-        <span class="panel__num" aria-hidden="true">08</span>
+        <span class="panel__num" data-kanji="捌" aria-hidden="true">08</span>
         <div class="contact">
           <div>
-            <p class="eyebrow" data-type>Contacto</p>
+            <p class="eyebrow" data-kanji="伝" data-type>Contacto</p>
             <h2 class="section-title">Habla <span class="grad">conmigo</span></h2>
             <p class="contact__sub">Abierto a colaboraciones, proyectos freelance y nuevas oportunidades. Si algo de lo que ves encaja, escríbeme directo.</p>
             <ul class="contact__tiles">
               <li>
-                <a href="https://wa.me/56951524830?text=Hola%20Matias,%20te%20contacto%20desde%20tu%20portafolio" target="_blank" rel="noopener noreferrer" class="tile glass glow-border">
+                <a href="https://wa.me/56951524830?text=Hola%20Matias,%20te%20contacto%20desde%20tu%20portafolio" target="_blank" rel="noopener noreferrer" class="tile glass aura-border">
                   <span class="tile__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.554 4.107 1.523 5.832L.079 23.07a.5.5 0 0 0 .611.636l5.385-1.406A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22A10 10 0 0 1 6.354 20.39l-.387-.231-4.007 1.046 1.07-3.91-.251-.4A10 10 0 1 1 12 22z"/></svg></span>
                   <span class="tile__lbl">WhatsApp</span>
                   <span class="tile__val">Contáctame</span>
@@ -498,7 +705,7 @@
                 </a>
               </li>
               <li>
-                <a href="https://www.linkedin.com/in/matias-moya-vargas-b2525726a/" target="_blank" rel="noopener noreferrer" class="tile glass glow-border">
+                <a href="https://www.linkedin.com/in/matias-moya-vargas-b2525726a/" target="_blank" rel="noopener noreferrer" class="tile glass aura-border">
                   <span class="tile__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></span>
                   <span class="tile__lbl">LinkedIn</span>
                   <span class="tile__val">Matias Moya</span>
@@ -506,7 +713,7 @@
                 </a>
               </li>
               <li>
-                <a href="https://github.com/twistyasap" target="_blank" rel="noopener noreferrer" class="tile glass glow-border">
+                <a href="https://github.com/twistyasap" target="_blank" rel="noopener noreferrer" class="tile glass aura-border">
                   <span class="tile__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.03-2.682-.103-.253-.447-1.27.098-2.646 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.376.202 2.393.1 2.646.64.698 1.028 1.591 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg></span>
                   <span class="tile__lbl">GitHub</span>
                   <span class="tile__val">twistyasap</span>
@@ -517,6 +724,7 @@
           </div>
 
           <form class="form glass" id="contact-form" novalidate>
+            <span class="form__seal" aria-hidden="true">伝</span>
             <div class="form__row">
               <div class="field">
                 <label class="field__lbl" for="f-name">Nombre</label>
@@ -549,6 +757,7 @@
   <footer class="footer">
     <strong>Matias Moya</strong>
     <span>© <span id="year"></span> · Santiago, Chile · DUOC UC</span>
+    <span class="footer__k" aria-hidden="true">クローバー王国 · Reino del Trébol</span>
   </footer>
 
   <button type="button" class="to-top" id="to-top" aria-label="Volver arriba">↑</button>

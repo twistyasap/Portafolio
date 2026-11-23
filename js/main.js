@@ -1,5 +1,6 @@
 /* ==========================================================================
-   Matias Moya — Portafolio · Interacciones generales
+   Matias Moya — Portafolio · Interacciones
+   Dirección de arte: Black Clover · grimorios, círculos mágicos y maná
    ========================================================================== */
 (function () {
   'use strict';
@@ -10,18 +11,251 @@
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var finePointer = window.matchMedia('(pointer: fine)').matches;
 
-  /* ── Tema ─────────────────────────────────────────────────────────────── */
-  function initTheme() {
-    var btn = $('#theme-toggle');
-    if (!btn) return;
-    btn.addEventListener('click', function () {
-      var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-theme', next);
-      try { localStorage.setItem('mm-theme-v2', next); } catch (e) { /* sin almacenamiento */ }
+  var GRIMOIRES = ['cinco', 'cuatro', 'tres'];
+  var THEME_COLOR = { cinco: '#080807', cuatro: '#0D0404', tres: '#F6EFE0' };
+
+  /* ── Selector de grimorio: 五 cinco · 四 cuatro · 三 tres hojas ─────────── */
+  function initGrimoireSwitch() {
+    var box = $('#grim-switch');
+    if (!box) return;
+    var btns = $$('.grim-switch__btn', box);
+    var mark = $('.grim-switch__mark', box);
+    var cast = $('#spellcast');
+    var heroTag = $('.hero__grim');
+    var meta = $('meta[name="theme-color"]');
+    var castTimer = 0;
+
+    function checked() { return btns.filter(function (b) { return b.getAttribute('aria-checked') === 'true'; })[0] || btns[0]; }
+
+    function moveMark(btn) {
+      if (!mark) return;
+      mark.style.transform = 'translateX(' + (btn.offsetLeft - mark.offsetLeft) + 'px)';
+    }
+
+    /* Conjuro a pantalla completa: página que se da vuelta + círculo mágico */
+    function spellcast() {
+      if (!cast || reducedMotion) return;
+      cast.classList.remove('is-on');
+      void cast.offsetWidth;
+      cast.classList.add('is-on');
+      clearTimeout(castTimer);
+      castTimer = setTimeout(function () { cast.classList.remove('is-on'); }, 1400);
+    }
+
+    function replayTag() {
+      if (!heroTag || reducedMotion) return;
+      heroTag.style.animation = 'none';
+      void heroTag.offsetWidth;
+      heroTag.style.animation = '';
+    }
+
+    function apply(name, btn, announce) {
+      root.setAttribute('data-grimoire', name);
+      try { localStorage.setItem('mm-grimoire', name); } catch (e) { /* sin almacenamiento */ }
+      if (meta && THEME_COLOR[name]) meta.setAttribute('content', THEME_COLOR[name]);
+      btns.forEach(function (b) {
+        var on = b === btn;
+        b.setAttribute('aria-checked', on ? 'true' : 'false');
+        b.tabIndex = on ? 0 : -1;
+      });
+      moveMark(btn);
+      if (announce) {
+        spellcast();
+        replayTag();
+        document.dispatchEvent(new CustomEvent('grimoirechange', { detail: { grimoire: name } }));
+      }
+    }
+
+    btns.forEach(function (btn, idx) {
+      btn.addEventListener('click', function () {
+        if (btn.getAttribute('aria-checked') === 'true') return;
+        apply(btn.getAttribute('data-grimoire'), btn, true);
+      });
+      btn.addEventListener('keydown', function (e) {
+        var next = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = btns[(idx + 1) % btns.length];
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = btns[(idx - 1 + btns.length) % btns.length];
+        if (!next) return;
+        e.preventDefault();
+        apply(next.getAttribute('data-grimoire'), next, true);
+        next.focus();
+      });
     });
+
+    /* Sincroniza con lo que dejó theme-init.js */
+    var current = root.getAttribute('data-grimoire');
+    if (GRIMOIRES.indexOf(current) === -1) current = 'cinco';
+    var active = btns.filter(function (b) { return b.getAttribute('data-grimoire') === current; })[0] || btns[0];
+    apply(current, active, false);
+
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { moveMark(checked()); });
+    window.addEventListener('resize', function () { moveMark(checked()); });
   }
 
-  /* ── Título del hero: separa letras para la animación ─────────────────── */
+  /* ── Grimorio interactivo (sección Perfil) ─────────────────────────────── */
+  function initGrimoire() {
+    var g = $('#grimoire');
+    if (!g) return;
+    var cover = $('#grimoire-open', g);
+    var closeBtn = $('#grimoire-close', g);
+    var tabs = $$('.grimoire__chapter', g);
+    var spells = $$('.spell', g);
+    var flip = $('.grimoire__flip', g);
+    var front = $('.grimoire__flip-front', g);
+    var folio = $('#grimoire-folio', g);
+    var rightPage = $('.grimoire__page--right', g);
+    var narrow = window.matchMedia('(max-width: 760px)');
+    var ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+    var current = 0, busy = false, openTimer = 0;
+
+    if (!cover || !tabs.length || !spells.length) return;
+
+    // Índice de cada conjuro para escalonar su aparición
+    spells.forEach(function (s) {
+      $$('.spell__list li', s).forEach(function (li, i) { li.style.setProperty('--li', i); });
+    });
+
+    /* La afinidad sube de 0 al valor final, como maná que se carga */
+    function countUp(spell) {
+      var el = $('[data-meter]', spell);
+      if (!el) return;
+      var end = +el.getAttribute('data-meter');
+      if (reducedMotion) { el.textContent = end; return; }
+      var t0 = performance.now(), delay = 350, dur = 1100;
+      el.textContent = '0';
+      (function tick(now) {
+        var p = Math.min(1, Math.max(0, (now - t0 - delay) / dur));
+        el.textContent = Math.round(end * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(tick);
+      })(t0);
+    }
+
+    function show(i, animate) {
+      spells.forEach(function (s, k) {
+        var on = k === i;
+        s.hidden = !on;
+        s.classList.remove('is-entering');
+        if (on && animate && !reducedMotion) {
+          void s.offsetWidth;
+          s.classList.add('is-entering');
+          countUp(s);
+        }
+      });
+      tabs.forEach(function (t, k) {
+        var on = k === i;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+      });
+      if (folio) folio.textContent = ROMAN[i] + ' / ' + ROMAN[spells.length - 1];
+      current = i;
+    }
+
+    /* Copia estática de un hechizo para pintarla en la hoja que gira */
+    function paint(spell) {
+      if (!front) return;
+      front.textContent = '';
+      var clone = spell.cloneNode(true);
+      clone.removeAttribute('id');
+      clone.removeAttribute('role');
+      clone.removeAttribute('tabindex');
+      clone.removeAttribute('aria-labelledby');
+      clone.hidden = false;
+      clone.classList.remove('is-entering');
+      clone.setAttribute('aria-hidden', 'true');
+      front.appendChild(clone);
+    }
+
+    function go(i, focusTab) {
+      var n = spells.length;
+      i = (i + n) % n;
+      if (i === current || busy) return;
+      var forward = i > current;
+      if (focusTab) tabs[i].focus({ preventScroll: true });
+
+      if (reducedMotion || narrow.matches || !flip) { show(i, true); return; }
+
+      busy = true;
+      flip.classList.remove('is-next', 'is-prev');
+      void flip.offsetWidth;
+
+      if (forward) {
+        // La hoja lleva el hechizo viejo y se levanta: debajo ya está el nuevo
+        paint(spells[current]);
+        show(i, true);
+        flip.classList.add('is-next');
+      } else {
+        // La hoja vuelve desde la izquierda trayendo el hechizo anterior
+        paint(spells[i]);
+        flip.classList.add('is-prev');
+      }
+      setTimeout(function () {
+        if (!forward) show(i, false);
+        flip.classList.remove('is-next', 'is-prev');
+        if (front) front.textContent = '';
+        busy = false;
+      }, 720);
+    }
+
+    function open() {
+      if (g.classList.contains('is-open')) return;
+      g.classList.add('is-open');
+      cover.setAttribute('aria-expanded', 'true');
+      if (!reducedMotion) {
+        g.classList.remove('is-opening');
+        void g.offsetWidth;
+        g.classList.add('is-opening');
+        clearTimeout(openTimer);
+        openTimer = setTimeout(function () { g.classList.remove('is-opening'); }, 1900);
+      }
+      setTimeout(function () {
+        show(current, true);
+        tabs[current].focus({ preventScroll: true });
+      }, reducedMotion ? 0 : 520);
+    }
+
+    function close() {
+      g.classList.remove('is-open', 'is-opening');
+      cover.setAttribute('aria-expanded', 'false');
+      cover.focus({ preventScroll: true });
+    }
+
+    cover.addEventListener('click', open);
+    if (closeBtn) closeBtn.addEventListener('click', close);
+
+    tabs.forEach(function (t, k) {
+      t.addEventListener('click', function () { go(k, false); });
+    });
+    $$('.grimoire__arrow', g).forEach(function (a) {
+      a.addEventListener('click', function () { go(current + (+a.getAttribute('data-dir')), false); });
+    });
+
+    // Teclado: flechas pasan de página, Escape cierra
+    g.addEventListener('keydown', function (e) {
+      if (!g.classList.contains('is-open')) return;
+      var onTab = tabs.indexOf(document.activeElement) > -1;
+      if (e.key === 'ArrowRight' || (onTab && e.key === 'ArrowDown')) { e.preventDefault(); go(current + 1, onTab); }
+      else if (e.key === 'ArrowLeft' || (onTab && e.key === 'ArrowUp')) { e.preventDefault(); go(current - 1, onTab); }
+      else if (onTab && e.key === 'Home') { e.preventDefault(); go(0, true); }
+      else if (onTab && e.key === 'End') { e.preventDefault(); go(spells.length - 1, true); }
+      else if (e.key === 'Escape') { close(); }
+    });
+
+    // Táctil: deslizar sobre la página derecha
+    if (rightPage) {
+      var sx = 0, sy = 0;
+      rightPage.addEventListener('touchstart', function (e) {
+        sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+      }, { passive: true });
+      rightPage.addEventListener('touchend', function (e) {
+        var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+        if (Math.abs(dx) > 44 && Math.abs(dx) > Math.abs(dy) * 1.4) go(current + (dx < 0 ? 1 : -1), false);
+      }, { passive: true });
+    }
+
+    show(0, false);
+  }
+
+  /* ── Título del hero: separa letras para la invocación ─────────────────── */
   function splitHeroTitle() {
     var title = $('[data-split]');
     if (!title) return;
@@ -41,15 +275,14 @@
     });
   }
 
-  /* ── Ticker: duplica el contenido para un loop continuo ───────────────── */
+  /* ── Ticker: duplica el contenido para un loop continuo ────────────────── */
   function initTicker() {
     var track = $('.ticker__track');
     if (!track) return;
     track.innerHTML += track.innerHTML;
   }
 
-  /* ── Hero: rotador de texto que escribe y borra (estilo terminal) ─────── */
-  /* ── Hero: hora local de Santiago en vivo ─────────────────────────────── */
+  /* ── Hero: hora local de Santiago en vivo ──────────────────────────────── */
   function initClock() {
     var el = $('#local-time');
     if (!el || !window.Intl) return;
@@ -65,6 +298,7 @@
     setInterval(tick, 1000);
   }
 
+  /* ── Hero: rotador de texto que escribe y borra ────────────────────────── */
   function initRoleRotator() {
     var el = $('#role-rotator');
     if (!el || reducedMotion) return;
@@ -88,7 +322,7 @@
     setTimeout(tick, 2600);
   }
 
-  /* ── Experiencia: pestañas accesibles con indicador animado ───────────── */
+  /* ── Experiencia: pestañas accesibles con indicador animado ────────────── */
   function initTabs() {
     $$('[data-tabs]').forEach(function (box) {
       var list = $('[role="tablist"]', box);
@@ -148,25 +382,23 @@
         if (rz) return;
         rz = requestAnimationFrame(function () { rz = 0; moveIndicator(selected()); });
       });
-      // Las fuentes cambian el tamaño de las pestañas al cargar
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { moveIndicator(selected()); });
     });
   }
 
-  /* ── Aparición al hacer scroll ────────────────────────────────────────── */
+  /* ── Aparición al hacer scroll ─────────────────────────────────────────── */
   function initReveal() {
     var items = $$('.reveal');
     if (!('IntersectionObserver' in window) || reducedMotion) {
       items.forEach(function (el) { el.classList.add('is-in'); });
       return;
     }
-    // Retraso escalonado entre hermanos
     items.forEach(function (el) {
       var siblings = $$(':scope > .reveal', el.parentElement);
       el.style.setProperty('--d', (siblings.indexOf(el) % 5) * 0.08 + 's');
     });
-    // Los títulos usan clip-path para descubrirse, y el observer lo toma en
-    // cuenta (nunca serían "visibles"); por eso se observa el eyebrow previo.
+    // Los títulos se revelan con clip-path: nunca serían "visibles" para el
+    // observer, así que se observa el eyebrow previo.
     var proxies = new Map();
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
@@ -187,57 +419,10 @@
     });
   }
 
-  /* ── Contadores animados (stats del hero) ─────────────────────────────── */
-  /* ── Servicios: un panel abierto a la vez (mouse, foco o toque) ───────── */
-  function initServices() {
-    var items = $$('.service');
-    if (!items.length) return;
-    function open(item) {
-      items.forEach(function (s) { s.classList.toggle('is-open', s === item); });
-    }
-    items.forEach(function (item) {
-      item.addEventListener('mouseenter', function () { open(item); });
-      item.addEventListener('focus', function () { open(item); });
-      item.addEventListener('click', function () { open(item); });
-    });
-    open(items[0]);
-  }
-
-  /* ── Proceso: la línea avanza según cuánto has bajado en la sección ───── */
-  function initProcess() {
-    var process = $('#process');
-    if (!process) return;
-    var steps = $$('.process__step', process);
-    var ticking = false;
-
-    function update() {
-      ticking = false;
-      var r = process.getBoundingClientRect();
-      var vh = window.innerHeight;
-      // 0 cuando el bloque entra por abajo, 1 cuando su final pasa el 40% de la pantalla
-      var p = (vh * 0.85 - r.top) / (r.height + vh * 0.45);
-      p = Math.max(0, Math.min(1, p));
-      process.style.setProperty('--progress', p.toFixed(3));
-      steps.forEach(function (s, i) {
-        s.classList.toggle('is-active', p >= i / steps.length + 0.02);
-      });
-    }
-
-    if (reducedMotion) {
-      process.style.setProperty('--progress', '1');
-      steps.forEach(function (s) { s.classList.add('is-active'); });
-      return;
-    }
-    window.addEventListener('scroll', function () {
-      if (!ticking) { ticking = true; requestAnimationFrame(update); }
-    }, { passive: true });
-    window.addEventListener('resize', update);
-    update();
-  }
-
+  /* ── Contadores animados (stats del hero) ──────────────────────────────── */
   function initCounters() {
     var nums = $$('[data-count]');
-    if (reducedMotion || !nums.length) return;
+    if (reducedMotion || !nums.length || !('IntersectionObserver' in window)) return;
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (!e.isIntersecting) return;
@@ -258,7 +443,53 @@
     nums.forEach(function (n) { io.observe(n); });
   }
 
-  /* ── Scroll: barra de progreso, botón arriba, nav activo ──────────────── */
+  /* ── Hechizos: un panel abierto a la vez (mouse, foco o toque) ─────────── */
+  function initServices() {
+    var items = $$('.service');
+    if (!items.length) return;
+    function open(item) {
+      items.forEach(function (s) { s.classList.toggle('is-open', s === item); });
+    }
+    items.forEach(function (item) {
+      item.addEventListener('mouseenter', function () { open(item); });
+      item.addEventListener('focus', function () { open(item); });
+      item.addEventListener('click', function () { open(item); });
+    });
+    open(items[0]);
+  }
+
+  /* ── Proceso: la línea de maná avanza con el scroll ────────────────────── */
+  function initProcess() {
+    var process = $('#process');
+    if (!process) return;
+    var steps = $$('.process__step', process);
+    var ticking = false;
+
+    function update() {
+      ticking = false;
+      var r = process.getBoundingClientRect();
+      var vh = window.innerHeight;
+      var p = (vh * 0.85 - r.top) / (r.height + vh * 0.45);
+      p = Math.max(0, Math.min(1, p));
+      process.style.setProperty('--progress', p.toFixed(3));
+      steps.forEach(function (s, i) {
+        s.classList.toggle('is-active', p >= i / steps.length + 0.02);
+      });
+    }
+
+    if (reducedMotion) {
+      process.style.setProperty('--progress', '1');
+      steps.forEach(function (s) { s.classList.add('is-active'); });
+      return;
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  }
+
+  /* ── Scroll: medidor de maná, botón arriba, nav activo ─────────────────── */
   function initScroll() {
     var progress = $('#progress');
     var toTop = $('#to-top');
@@ -268,8 +499,6 @@
 
     function update() {
       ticking = false;
-      // Primero todas las lecturas de layout, después las escrituras
-      // (intercalarlas fuerza un recálculo de layout síncrono)
       var vh = window.innerHeight;
       var max = root.scrollHeight - vh;
       var y = window.scrollY;
@@ -297,11 +526,10 @@
     });
   }
 
-  /* ── Efectos de puntero (solo mouse y sin movimiento reducido) ────────── */
+  /* ── Efectos de puntero (solo mouse y sin movimiento reducido) ─────────── */
   function initPointerFx() {
     if (!finePointer || reducedMotion) return;
 
-    // Ejecuta fn como máximo una vez por frame con el último evento recibido
     function perFrame(fn) {
       var pending = null, id = 0;
       return function (e) {
@@ -310,8 +538,6 @@
         id = requestAnimationFrame(function () { id = 0; fn(pending); });
       };
     }
-    // Guarda el rect al entrar (y lo invalida al hacer scroll/resize) para no
-    // forzar un layout con getBoundingClientRect en cada mousemove
     var rectCache = new WeakMap();
     function rectOf(el) {
       var r = rectCache.get(el);
@@ -322,16 +548,15 @@
     window.addEventListener('scroll', clearRects, { passive: true });
     window.addEventListener('resize', clearRects);
 
-    // Spotlight que sigue al cursor: se mueve con transform (compositor),
-    // sin tocar variables CSS en :root (eso recalculaba estilos de toda la página)
-    var spot = $('.spotlight');
-    if (spot) {
+    // Aura de maná que sigue al cursor
+    var aura = $('.aura');
+    if (aura) {
       window.addEventListener('mousemove', perFrame(function (e) {
-        spot.style.transform = 'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0)';
+        aura.style.transform = 'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0)';
       }), { passive: true });
     }
 
-    // Brillo dentro de tarjetas glass
+    // Brillo dentro de las tarjetas
     $$('.glass').forEach(function (g) {
       g.addEventListener('mousemove', perFrame(function (e) {
         var r = rectOf(g);
@@ -340,7 +565,7 @@
       }), { passive: true });
     });
 
-    // Inclinación 3D de proyectos
+    // Inclinación 3D de los proyectos
     $$('[data-tilt]').forEach(function (card) {
       var leaving = false;
       card.addEventListener('mouseenter', function () { leaving = false; rectCache.delete(card); });
@@ -370,8 +595,7 @@
       wrap.addEventListener('mouseleave', function () { edLeaving = true; editor.style.transform = ''; });
     }
 
-    // Botones magnéticos (el rect se toma al entrar: el botón se mueve con
-    // transform y medirlo en cada evento lo haría "perseguirse" a sí mismo)
+    // Botones magnéticos
     $$('[data-magnetic]').forEach(function (b) {
       var r = null;
       b.addEventListener('mouseenter', function () { b.style.transform = ''; r = b.getBoundingClientRect(); });
@@ -383,7 +607,7 @@
     });
   }
 
-  /* ── Pausa las animaciones CSS de las secciones que no están en pantalla ─ */
+  /* ── Pausa las animaciones CSS de las secciones fuera de pantalla ──────── */
   function initOffscreenPause() {
     if (!('IntersectionObserver' in window)) return;
     var blocks = $$('main > section, main > .ticker');
@@ -393,23 +617,24 @@
     blocks.forEach(function (b) { io.observe(b); });
   }
 
-  /* ── Ripple en botones ────────────────────────────────────────────────── */
-  function initRipple() {
+  /* ── Destello de maná al pulsar ────────────────────────────────────────── */
+  function initBurst() {
     if (reducedMotion) return;
-    $$('.btn, .to-top').forEach(function (b) {
+    $$('.btn, .to-top, .icon-btn, .grim-switch__btn, .grimoire__arrow').forEach(function (b) {
       b.addEventListener('click', function (e) {
         var r = b.getBoundingClientRect();
         var s = Math.max(r.width, r.height) / 2;
         var dot = document.createElement('span');
-        dot.className = 'ripple';
-        dot.style.cssText = 'width:' + s + 'px;height:' + s + 'px;left:' + (e.clientX - r.left - s / 2) + 'px;top:' + (e.clientY - r.top - s / 2) + 'px';
+        dot.className = 'burst';
+        dot.style.cssText = 'width:' + s + 'px;height:' + s + 'px;left:' +
+          (e.clientX - r.left - s / 2) + 'px;top:' + (e.clientY - r.top - s / 2) + 'px';
         b.appendChild(dot);
-        setTimeout(function () { dot.remove(); }, 600);
+        setTimeout(function () { dot.remove(); }, 640);
       });
     });
   }
 
-  /* ── Formulario de contacto (EmailJS) ─────────────────────────────────── */
+  /* ── Formulario de contacto (EmailJS) ──────────────────────────────────── */
   var EMAILJS = {
     publicKey: '0277TApkwNr7f0AMh',
     serviceId: 'service_3zmax82',
@@ -467,12 +692,13 @@
     });
   }
 
-  /* ── Init ─────────────────────────────────────────────────────────────── */
+  /* ── Init ──────────────────────────────────────────────────────────────── */
   function init() {
     var year = $('#year');
     if (year) year.textContent = new Date().getFullYear();
 
-    initTheme();
+    initGrimoireSwitch();
+    initGrimoire();
     splitHeroTitle();
     initTicker();
     initRoleRotator();
@@ -485,7 +711,7 @@
     initScroll();
     initPointerFx();
     initOffscreenPause();
-    initRipple();
+    initBurst();
     initForm();
   }
 

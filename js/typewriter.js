@@ -15,7 +15,7 @@
 (function () {
   'use strict';
 
-  var GROUP = '.project, .stack-card, .editor, .bento__item';
+  var GROUP = '.project, .stack-card, .editor';
   var ABORT = {};
 
   function textNodes(root) {
