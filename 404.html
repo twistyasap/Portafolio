@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es" data-grimoire="cinco">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página no encontrada — Matias Moya</title>
+
+  <!-- El hosting sirve este archivo en cualquier ruta que no exista (p. ej.
+       /Portafolio/a/b/c). Se fija la base para que css/, js/ e img/ carguen
+       bien sin importar la profundidad de la URL. En GitHub Pages de proyecto
+       la base es /<repo>/; en dominio propio o abierto en local, se deja igual. -->
+  <script>
+    (function () {
+      if (location.protocol === 'file:') return;
+      var seg = location.pathname.split('/')[1];
+      var base = document.createElement('base');
+      base.href = /\.github\.io$/.test(location.hostname) && seg ? '/' + seg + '/' : '/';
+      document.head.appendChild(base);
+    })();
+  </script>
+
+  <meta name="description" content="Esta página no existe en el portafolio de Matias Moya.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#080807">
+  <link rel="icon" type="image/png" href="MM (1).png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@500;700;800;900&family=Grenze:wght@500;600;700;800&family=Bebas+Neue&family=Noto+Serif+JP:wght@400;600;900&family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+
+  <script src="js/theme-init.js"></script>
+  <script src="js/mana.js" defer></script>
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <!-- ═══ FONDO ═══ cielo de maná + círculo mágico + partículas (canvas) -->
+  <div class="backdrop" aria-hidden="true">
+    <div class="backdrop__sky"></div>
+    <div class="backdrop__grid"></div>
+
+    <!-- Círculo mágico · 五つ葉 (antimagia) -->
+    <svg class="circle circle--cinco" viewBox="0 0 400 400" focusable="false">
+      <circle class="circle__ring circle__ring--runes" cx="200" cy="200" r="186"/>
+      <circle class="circle__ring" cx="200" cy="200" r="168"/>
+      <circle class="circle__ring circle__ring--dash" cx="200" cy="200" r="150"/>
+      <circle class="circle__ring" cx="200" cy="200" r="96"/>
+      <path class="circle__crack" d="M200 14l-18 84 30 40-24 56 26 50-16 98"/>
+      <g class="circle__clover" transform="translate(200 200) scale(.92)">
+        <path class="leaf" transform="rotate(0)"   d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(72)"  d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(144)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(216)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(288)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+      </g>
+    </svg>
+
+    <!-- Círculo mágico · 四つ葉 -->
+    <svg class="circle circle--cuatro" viewBox="0 0 400 400" focusable="false">
+      <circle class="circle__ring circle__ring--runes" cx="200" cy="200" r="186"/>
+      <circle class="circle__ring" cx="200" cy="200" r="164"/>
+      <circle class="circle__ring circle__ring--dash" cx="200" cy="200" r="138"/>
+      <circle class="circle__ring" cx="200" cy="200" r="92"/>
+      <g class="circle__clover" transform="translate(200 200) scale(.92)">
+        <path class="leaf" transform="rotate(0)"   d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(90)"  d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(180)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(270)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+      </g>
+    </svg>
+
+    <!-- Círculo mágico · 三つ葉 (amanecer dorado) -->
+    <svg class="circle circle--tres" viewBox="0 0 400 400" focusable="false">
+      <circle class="circle__ring circle__ring--rays" cx="200" cy="200" r="182"/>
+      <circle class="circle__ring" cx="200" cy="200" r="158"/>
+      <circle class="circle__ring circle__ring--dash" cx="200" cy="200" r="134"/>
+      <circle class="circle__ring" cx="200" cy="200" r="88"/>
+      <g class="circle__clover" transform="translate(200 200) scale(.92)">
+        <path class="leaf" transform="rotate(0)"   d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(120)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+        <path class="leaf" transform="rotate(240)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+      </g>
+    </svg>
+
+    <!-- Escudo de la orden activa, abajo a la derecha -->
+    <div class="order-crest">
+      <img class="order-crest__img crest__bulls" src="img/orden-toros-negros.png" alt="">
+      <img class="order-crest__img crest__lions" src="img/orden-leones-carmesi.png" alt="">
+      <img class="order-crest__img crest__dawn" src="img/orden-amanecer-dorado.png" alt="">
+    </div>
+
+    <!-- Corrientes de maná al pie -->
+    <svg class="backdrop__defs" width="0" height="0" focusable="false">
+      <defs>
+        <linearGradient id="mn-a" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" class="stop-ac" stop-opacity="0"/>
+          <stop offset=".5" class="stop-ac" stop-opacity=".2"/>
+          <stop offset="1" class="stop-ac" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="mn-b" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" class="stop-ac2" stop-opacity=".16"/>
+          <stop offset="1" class="stop-ac" stop-opacity=".02"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <svg class="stream stream--1" viewBox="0 0 2880 900" preserveAspectRatio="none"><path fill="url(#mn-a)" d="M0 560C240 470 480 650 720 560S1200 650 1440 560 1920 650 2160 560 2640 650 2880 560V900H0Z"/></svg>
+    <svg class="stream stream--2" viewBox="0 0 2880 900" preserveAspectRatio="none"><path fill="url(#mn-b)" d="M0 650C240 720 480 580 720 650S1200 580 1440 650 1920 580 2160 650 2640 580 2880 650V900H0Z"/></svg>
+    <svg class="stream stream--3" viewBox="0 0 2880 900" preserveAspectRatio="none"><path class="stream-line stream-line--a" d="M0 500C240 420 480 580 720 500S1200 580 1440 500 1920 580 2160 500 2640 580 2880 500"/></svg>
+    <svg class="stream stream--4" viewBox="0 0 2880 900" preserveAspectRatio="none"><path class="stream-line stream-line--b" d="M0 320C480 260 960 380 1440 320S2400 380 2880 320"/></svg>
+
+    <canvas id="mana" class="backdrop__canvas"></canvas>
+
+    <!-- Hojas / chispas / polvo dorado según el grimorio -->
+    <div class="fall fall--1"></div>
+    <div class="fall fall--2"></div>
+    <div class="fall fall--3"></div>
+
+    <div class="backdrop__veil"></div>
+  </div>
+
+  <!-- Aura que sigue al cursor -->
+  <div class="aura" aria-hidden="true"></div>
+  <!-- Conjuro que barre la pantalla al cambiar de grimorio -->
+  <div class="spellcast" id="spellcast" aria-hidden="true"><i class="spellcast__page"></i><i class="spellcast__ring"></i><i class="spellcast__flash"></i></div>
+
+  <header class="nav">
+    <a href="./" class="nav__logo" aria-label="Inicio">
+      <span class="nav__logo-kanji" aria-hidden="true">魔</span>
+      <span class="nav__logo-txt">&lt;MM/&gt;</span>
+    </a>
+    <nav aria-label="Principal">
+      <ul class="nav__links">
+        <li><a href="./#sobre"><span class="nav__k" aria-hidden="true">書</span>Perfil</a></li>
+        <li><a href="./#experiencia"><span class="nav__k" aria-hidden="true">歴</span>Experiencia</a></li>
+        <li><a href="./#servicios"><span class="nav__k" aria-hidden="true">魔</span>Hechizos</a></li>
+        <li><a href="./#proyectos"><span class="nav__k" aria-hidden="true">戦</span>Proyectos</a></li>
+        <li><a href="./#stack"><span class="nav__k" aria-hidden="true">具</span>Stack</a></li>
+        <li><a href="./#contacto"><span class="nav__k" aria-hidden="true">伝</span>Contacto</a></li>
+      </ul>
+    </nav>
+    <div class="nav__end">
+      <a href="https://www.linkedin.com/in/matias-moya-vargas-b2525726a/" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="LinkedIn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+      </a>
+      <a href="https://github.com/twistyasap" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="GitHub">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.03-2.682-.103-.253-.447-1.27.098-2.646 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.376.202 2.393.1 2.646.64.698 1.028 1.591 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      </a>
+
+      <!-- Selector de grimorio: 3 · 4 · 5 hojas -->
+      <div class="grim-switch" id="grim-switch" role="radiogroup" aria-label="Grimorio del sitio">
+        <span class="grim-switch__mark" aria-hidden="true"></span>
+        <button type="button" class="grim-switch__btn" role="radio" aria-checked="true" data-grimoire="cinco" title="Grimorio de cinco hojas · Orden de los Toros Negros">
+          <svg viewBox="-60 -60 120 120" aria-hidden="true" class="clover">
+            <g><path transform="rotate(0)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(72)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(144)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(216)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(288)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/></g>
+          </svg>
+          <span class="visually-hidden">Cinco hojas</span>
+        </button>
+        <button type="button" class="grim-switch__btn" role="radio" aria-checked="false" tabindex="-1" data-grimoire="cuatro" title="Grimorio de cuatro hojas · Orden de los Leones Carmesí">
+          <svg viewBox="-60 -60 120 120" aria-hidden="true" class="clover">
+            <g><path transform="rotate(0)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(90)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(180)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(270)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/></g>
+          </svg>
+          <span class="visually-hidden">Cuatro hojas</span>
+        </button>
+        <button type="button" class="grim-switch__btn" role="radio" aria-checked="false" tabindex="-1" data-grimoire="tres" title="Grimorio de tres hojas · Orden del Amanecer Dorado">
+          <svg viewBox="-60 -60 120 120" aria-hidden="true" class="clover">
+            <g><path transform="rotate(0)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(120)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/><path transform="rotate(240)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/></g>
+          </svg>
+          <span class="visually-hidden">Tres hojas</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="nf">
+    <span class="hero__watermark" aria-hidden="true"></span>
+
+    <p class="hero__grim" aria-hidden="true">
+      <span class="hero__grim-k"></span>
+      <span class="crest"><img class="crest__bulls" src="img/orden-toros-negros.png" alt=""><img class="crest__lions" src="img/orden-leones-carmesi.png" alt=""><img class="crest__dawn" src="img/orden-amanecer-dorado.png" alt=""></span>
+      <span class="hero__grim-txt"></span>
+    </p>
+
+    <!-- 4 · círculo mágico · 4 — el cero es un sello que no termina de activarse -->
+    <p class="nf__code" aria-hidden="true">
+      <span class="nf__digit" style="--i:0">4</span>
+      <span class="nf__seal">
+        <svg viewBox="0 0 200 200" focusable="false">
+          <circle class="nf__ring nf__ring--runes" cx="100" cy="100" r="94"/>
+          <circle class="nf__ring" cx="100" cy="100" r="84"/>
+          <circle class="nf__ring nf__ring--dash" cx="100" cy="100" r="75"/>
+          <path class="nf__crack" d="M100 6l-9 40 15 20-12 28 13 25-8 75"/>
+          <g class="nf__clover nf__clover--5" transform="translate(100 100) scale(.98)">
+            <path transform="rotate(0)"   d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+            <path transform="rotate(72)"  d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+            <path transform="rotate(144)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+            <path transform="rotate(216)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+            <path transform="rotate(288)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+          </g>
+          <g class="nf__clover nf__clover--4" transform="translate(100 100) scale(.98)">
+            <path transform="rotate(0)"   d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+            <path transform="rotate(90)"  d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+            <path transform="rotate(180)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+            <path transform="rotate(270)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+          </g>
+          <g class="nf__clover nf__clover--3" transform="translate(100 100) scale(.98)">
+            <path transform="rotate(0)"   d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+            <path transform="rotate(120)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+            <path transform="rotate(240)" d="M0 0C-24-8-32-36-16-50-6-58 6-58 16-50 32-36 24-8 0 0Z"/>
+          </g>
+        </svg>
+      </span>
+      <span class="nf__digit" style="--i:2">4</span>
+    </p>
+
+    <span class="hero__rune" aria-hidden="true"></span>
+
+    <h1 class="nf__title"><span class="visually-hidden">Error 404: </span>Esta página no está en el <span class="grad">grimorio</span></h1>
+    <p class="nf__desc">El hechizo que buscabas se desvaneció o nunca llegó a escribirse. Puede que el enlace esté roto o que la página haya cambiado de lugar.</p>
+
+    <p class="nf__spell">
+      <span class="hero__prompt" aria-hidden="true">魔導書 $</span>
+      <span>invocar</span>
+      <code class="nf__path" id="nf-path">/página</code>
+      <span class="nf__fail">✕ hechizo fallido</span>
+    </p>
+
+    <div class="hero__ctas">
+      <a href="./" class="btn btn--primary" data-magnetic>Volver al inicio
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg>
+      </a>
+      <a href="./#proyectos" class="btn btn--ghost" data-magnetic>Ver proyectos</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <strong>Matias Moya</strong>
+    <span>© <span id="year"></span> · Santiago, Chile · DUOC UC</span>
+    <span class="footer__k" aria-hidden="true">クローバー王国 · Reino del Trébol</span>
+  </footer>
+</body>
+</html>

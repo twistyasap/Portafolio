@@ -692,6 +692,16 @@
     });
   }
 
+  /* ── 404: muestra la ruta que no existe ────────────────────────────────── */
+  function initNotFound() {
+    var el = $('#nf-path');
+    if (!el) return;
+    var path = location.pathname + location.search;
+    try { path = decodeURI(path); } catch (e) { /* URL mal codificada: se muestra tal cual */ }
+    el.textContent = path;
+    el.title = path;
+  }
+
   /* ── Init ──────────────────────────────────────────────────────────────── */
   function init() {
     var year = $('#year');
@@ -713,6 +723,7 @@
     initOffscreenPause();
     initBurst();
     initForm();
+    initNotFound();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
